@@ -1,0 +1,28 @@
+[Unit]
+Description=Fair Lending Lab FastAPI
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=scott
+Group=scott
+WorkingDirectory=/home/scott/fair-lending-lab/platform
+EnvironmentFile=/home/scott/fair-lending-lab/platform/.env
+ExecStart=/home/scott/fair-lending-lab/platform/.venv/bin/uvicorn \
+    flab.api.main:app \
+    --host 127.0.0.1 \
+    --port 8702 \
+    --workers 2 \
+    --proxy-headers \
+    --forwarded-allow-ips=127.0.0.1
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/scott/fair-lending-lab/platform/data
+
+[Install]
+WantedBy=multi-user.target
