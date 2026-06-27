@@ -1,10 +1,12 @@
 // Number / p-value / effect-size formatting helpers.
 
+// UI p-value display. Very small p-values are collapsed to "< 0.001": with
+// n in the tens of thousands the exact value (e.g. 1e-102) is technically
+// correct but reads as noise to a non-statistician. The exact float stays in
+// the API payload and the exported results.json for anyone who wants it.
 export function fmtP(p: number | null | undefined): string {
   if (p === null || p === undefined) return "-";
-  if (p === 0) return "< 1e-300";
-  if (p < 1e-6) return p.toExponential(2);
-  if (p < 0.001) return p.toExponential(2);
+  if (p < 0.001) return "< 0.001";
   if (p < 0.01) return p.toFixed(4);
   return p.toFixed(3);
 }

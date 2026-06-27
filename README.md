@@ -2,7 +2,7 @@
 
 Hypothesis testing and statistical inference on CFPB HMDA mortgage application records. Multiple-method validation (parametric, non-parametric, permutation, bootstrap, Bayesian sensitivity), family-wise correction across the test family, effect sizes with confidence intervals, and explicit causal-framing caveats.
 
-**Headline finding (Massachusetts 2023 LAR):** Black non-Hispanic applicants face a +10.7 percentage point (95% CI 8.9 to 12.4) higher denial rate than White non-Hispanic applicants for first-lien conventional owner-occupied home-purchase loans. The disparity persists inside the lowest income band (+18.5 pp). All five preregistered hypotheses reject the null at BH-FDR q = 0.05 and Bonferroni. **Screening signal, not a causal claim.** HMDA omits credit score and full underwriting.
+**Headline finding (Massachusetts 2023 LAR):** Black non-Hispanic applicants show a +10.7 percentage point (95% CI 8.9 to 12.4) higher observed denial rate than White non-Hispanic applicants for first-lien conventional owner-occupied home-purchase loans. The observed disparity persists inside the lowest income band (+18.5 pp). All five preregistered hypotheses reject the null at BH-FDR q = 0.05 and Bonferroni. **Screening signal, not a causal claim** — a statistical association that flags where a fair-lending review would dig in next, not a finding of discrimination. HMDA omits credit score and full underwriting.
 
 ## Live
 
@@ -64,11 +64,11 @@ cd platform
 python3.12 -m venv ../.venv
 ../.venv/bin/pip install -e .[dev]
 cp .env.example .env  # fill in your local Postgres credentials
-psql "$PG_URL" -f flab/db/schema.sql
-../.venv/bin/python -m flab.cli ingest hmda --year 2023 --state MA
-../.venv/bin/python -m flab.cli ingest build-curated
-../.venv/bin/python -m flab.cli analyze run-all
-../.venv/bin/python -m flab.cli export-results
+../.venv/bin/flab db init
+../.venv/bin/flab ingest hmda --year 2023 --state MA
+../.venv/bin/flab ingest build-curated
+../.venv/bin/flab analyze run-all
+../.venv/bin/flab export-results
 ../.venv/bin/python -m uvicorn flab.api.main:app --host 127.0.0.1 --port 8702
 ```
 

@@ -6,9 +6,10 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 
 from flab import __version__
-from flab.config import get_settings
+from flab.config import get_data_dir, get_settings
 from flab.db import fetch_df
 from flab.hypotheses import REGISTRY
 from flab.hypotheses.registry import family_wise_correction
@@ -151,6 +152,27 @@ def get_hypothesis(key: str) -> dict[str, Any]:
 @app.get("/api/family_correction")
 def family_correction() -> dict[str, Any]:
     return family_wise_correction()
+
+
+@app.get("/api/results.json")
+def results_json() -> FileResponse:
+    """Full exported results with exact (unrounded) p-values and effect sizes.
+
+    The dashboard collapses tiny p-values to "< 0.001" for readability; this is
+    the downloadable artifact for anyone who wants the exact figures. Produced by
+    `flab export-results`.
+    """
+    path = get_data_dir() / "processed" / "results.json"
+    if not path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="results.json not generated yet. Run `flab export-results`.",
+        )
+    return FileResponse(
+        path,
+        media_type="application/json",
+        filename="fair-lending-results.json",
+    )
 
 
 @app.get("/api/denial_rates_by_race")

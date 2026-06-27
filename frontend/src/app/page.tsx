@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   api,
+  API_BASE,
   type DenialByIncomeBand,
   type FamilyCorrection,
   type HypothesisSummary,
@@ -165,8 +166,8 @@ function CalloutWhatMattersNow({ headline }: { headline: HypothesisSummary | und
       <div className="text-xs uppercase tracking-wider text-accent">what matters now</div>
       <p className="mt-2 text-sm leading-relaxed text-text">
         <span className="font-mono text-accent">H1.</span>{" "}
-        <strong>Black non-Hispanic applicants face a higher denial rate</strong> than White
-        non-Hispanic applicants for first-lien conventional owner-occupied home-purchase
+        <strong>Black non-Hispanic applicants show a higher observed denial rate</strong> than
+        White non-Hispanic applicants for first-lien conventional owner-occupied home-purchase
         loans, by{" "}
         <span className="font-mono text-text">
           risk difference = {fmtPct(rd, 1)} (95% CI {ci})
@@ -237,7 +238,8 @@ function OverviewTab({
         <DenialByIncomeChart data={byBand} />
         <p className="mt-2 text-xs text-muted">
           Income binning is the simplest control HMDA supports. The Black vs White spread
-          persists across all bands (H5).
+          persists across all bands (H5). Cells with n &lt; 30 are suppressed — small-n cells
+          produce unstable rates; hover any bar for the rate and exact n.
         </p>
       </Panel>
       <Panel title="result summary" subtitle="five preregistered hypotheses" className="lg:col-span-2">
@@ -694,6 +696,23 @@ function MethodsTab() {
             full underwriting, and detailed appraisal. Every finding here is a statistical
             association in observed covariates, not a discrimination claim. The dashboard
             repeats the caveat on every card.
+          </p>
+          <p className="mt-3">
+            <strong className="text-text">Reading the p-values.</strong> With n in the tens of
+            thousands, several primary tests return p-values far below any practical threshold.
+            The dashboard displays these as{" "}
+            <span className="font-mono text-text">p &lt; 0.001</span> rather than figures like{" "}
+            <span className="font-mono text-text">1e-102</span>, which read as noise. The exact,
+            unrounded values are in the{" "}
+            <a
+              href={`${API_BASE}/api/results.json`}
+              className="text-accent underline underline-offset-2 hover:text-text"
+              target="_blank"
+              rel="noreferrer"
+            >
+              downloadable results.json
+            </a>
+            .
           </p>
         </div>
       </Panel>

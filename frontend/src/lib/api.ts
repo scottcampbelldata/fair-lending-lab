@@ -2,6 +2,9 @@
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8702";
 
+// Public base URL, for building direct links (e.g. the results.json download).
+export const API_BASE = BASE;
+
 async function get<T>(path: string): Promise<T> {
   const res = await fetch(`${BASE}${path}`, { cache: "no-store" });
   if (!res.ok) {
