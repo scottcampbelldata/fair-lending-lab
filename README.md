@@ -2,7 +2,7 @@
 
 Hypothesis testing and statistical inference on CFPB HMDA mortgage application records. Multiple-method validation (parametric, non-parametric, permutation, bootstrap, Bayesian sensitivity), family-wise correction across the test family, effect sizes with confidence intervals, and explicit causal-framing caveats.
 
-**Headline finding (Massachusetts 2023 LAR):** Black non-Hispanic applicants show a +10.7 percentage point (95% CI 8.9 to 12.4) higher observed denial rate than White non-Hispanic applicants for first-lien conventional owner-occupied home-purchase loans. The observed disparity persists inside the lowest income band (+18.5 pp). All five preregistered hypotheses reject the null at BH-FDR q = 0.05 and Bonferroni. **Screening signal, not a causal claim** — a statistical association that flags where a fair-lending review would dig in next, not a finding of discrimination. HMDA omits credit score and full underwriting.
+**Headline finding (Massachusetts 2023 LAR):** Black non-Hispanic applicants show a +10.7 percentage point (95% CI 8.9 to 12.4) higher observed denial rate than White non-Hispanic applicants for first-lien conventional owner-occupied home-purchase loans. The observed disparity persists inside the lowest income band (+18.5 pp). All five preregistered hypotheses reject the null at BH-FDR q = 0.05 and Bonferroni. **Screening signal, not a causal claim.** It is a statistical association that flags where a fair-lending review would dig in next, not a finding of discrimination. HMDA omits credit score and full underwriting.
 
 ## Live
 

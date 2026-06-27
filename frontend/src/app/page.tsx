@@ -238,8 +238,8 @@ function OverviewTab({
         <DenialByIncomeChart data={byBand} />
         <p className="mt-2 text-xs text-muted">
           Income binning is the simplest control HMDA supports. The Black vs White spread
-          persists across all bands (H5). Cells with n &lt; 30 are suppressed — small-n cells
-          produce unstable rates; hover any bar for the rate and exact n.
+          persists across all bands (H5). Cells with n &lt; 30 are suppressed; small-n cells
+          produce unstable rates. Hover any bar for the rate and exact n.
         </p>
       </Panel>
       <Panel title="result summary" subtitle="five preregistered hypotheses" className="lg:col-span-2">
