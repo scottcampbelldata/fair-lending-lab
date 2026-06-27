@@ -72,17 +72,18 @@ EOF
 sudo chmod 600 /home/scott/fair-lending-lab/platform/.env
 ```
 
-Apply the schema and load the data:
+Apply the schema and load the data. Use the installed `flab` console
+entry point (the venv puts it on `.venv/bin/flab`):
 
 ```bash
-sudo -u scott -H .venv/bin/python -c "from pathlib import Path; from flab.db import get_conn; sql=Path('flab/db/schema.sql').read_text();  c=get_conn().__enter__(); c.cursor().execute(sql); c.commit()"
-# or simpler:
+sudo -u scott -H .venv/bin/flab db init
+# or apply the schema directly with psql:
 sudo -u scott -H psql "postgresql://flab_app:STRONG_PW_HERE@localhost/fair_lending_lab" -f flab/db/schema.sql
 
-sudo -u scott -H .venv/bin/python -m flab.cli ingest hmda --year 2023 --state MA
-sudo -u scott -H .venv/bin/python -m flab.cli ingest build-curated
-sudo -u scott -H .venv/bin/python -m flab.cli analyze run-all
-sudo -u scott -H .venv/bin/python -m flab.cli export-results --out data/processed/results.json
+sudo -u scott -H .venv/bin/flab ingest hmda --year 2023 --state MA
+sudo -u scott -H .venv/bin/flab ingest build-curated
+sudo -u scott -H .venv/bin/flab analyze run-all
+sudo -u scott -H .venv/bin/flab export-results --out data/processed/results.json
 ```
 
 ## 4. systemd
