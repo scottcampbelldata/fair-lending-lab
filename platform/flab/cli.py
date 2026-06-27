@@ -125,3 +125,7 @@ def export_results(out: str = "data/processed/results.json") -> None:
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(json.dumps(out_payload, indent=2, default=str), encoding="utf-8")
     console.print(f"[green]wrote[/green] {p} ({len(payloads)} hypotheses)")
+
+
+if __name__ == "__main__":
+    app()
