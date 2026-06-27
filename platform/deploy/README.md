@@ -43,7 +43,7 @@ PGPASSWORD='STRONG_PW_HERE' psql -h localhost -U flab_app -d fair_lending_lab -c
 ## 3. Application install
 
 ```bash
-sudo -u scott -H git clone https://github.com/scottcampbell8/fair-lending-lab.git /home/scott/fair-lending-lab
+sudo -u scott -H git clone https://github.com/scottcampbelldata/fair-lending-lab.git /home/scott/fair-lending-lab
 cd /home/scott/fair-lending-lab/platform
 sudo -u scott -H python3.12 -m venv .venv
 sudo -u scott -H .venv/bin/pip install --upgrade pip wheel
@@ -109,8 +109,8 @@ curl -s http://127.0.0.1:8702/health
 ## 5. nginx and TLS
 
 ```bash
-sudo cp deploy/nginx.conf /etc/nginx/sites-available/fair-lending-api.scottcampbell.io
-sudo ln -s /etc/nginx/sites-available/fair-lending-api.scottcampbell.io /etc/nginx/sites-enabled/
+sudo cp deploy/nginx.conf /etc/nginx/sites-available/fair-lending-api.scottcampbell.io.conf
+sudo ln -s /etc/nginx/sites-available/fair-lending-api.scottcampbell.io.conf /etc/nginx/sites-enabled/
 sudo nginx -t
 
 # Point fair-lending-api.scottcampbell.io at the VPS in DNS first (A record),
