@@ -15,7 +15,9 @@ export function HypothesisCard({ h, active, onClick }: Props) {
       type="button"
       onClick={onClick}
       className={`group w-full rounded-md border bg-surface p-5 text-left transition-colors ${
-        active ? "border-accent" : "border-border hover:border-muted"
+        active
+          ? "border-accent-soft bg-accent-dim"
+          : "border-border hover:border-border-strong"
       }`}
     >
       <div className="flex flex-wrap items-center gap-2">
@@ -27,7 +29,9 @@ export function HypothesisCard({ h, active, onClick }: Props) {
         )}
         <Pill>{h.primary_method ?? "no result"}</Pill>
       </div>
-      <h3 className="mt-2 text-base font-semibold text-text">{h.title}</h3>
+      <h3 className="mt-2 font-display text-base font-medium tracking-tight text-text">
+        {h.title}
+      </h3>
       <p className="mt-1 text-sm leading-relaxed text-muted">
         <span className="font-mono text-text">H0:</span> {h.h0}
         {"  "}

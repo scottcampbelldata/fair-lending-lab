@@ -25,36 +25,36 @@ export function PosteriorChart({ mean, lo, hi, probAGtB }: Props) {
         <AreaChart data={rows} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
           <defs>
             <linearGradient id="posterior" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#4f8bf5" stopOpacity={0.55} />
-              <stop offset="100%" stopColor="#4f8bf5" stopOpacity={0} />
+              <stop offset="0%" stopColor="#e0a24a" stopOpacity={0.5} />
+              <stop offset="100%" stopColor="#e0a24a" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="#1f2733" strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke="#22262d" strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="x"
-            stroke="#8b919e"
-            tick={{ fill: "#8b919e", fontSize: 10 }}
+            stroke="#8b8f99"
+            tick={{ fill: "#8b8f99", fontSize: 10 }}
             tickLine={false}
-            axisLine={{ stroke: "#23262d" }}
+            axisLine={{ stroke: "#272b33" }}
             tickFormatter={(v: number) => v.toFixed(2)}
           />
           <YAxis hide />
           <Tooltip
             contentStyle={{
-              background: "#131519",
-              border: "1px solid #23262d",
+              background: "#15171c",
+              border: "1px solid #272b33",
               borderRadius: 6,
-              color: "#e5e7eb",
+              color: "#e9e7e2",
               fontSize: 11,
             }}
-            labelStyle={{ color: "#8b919e" }}
+            labelStyle={{ color: "#8b8f99" }}
             formatter={(_v: number) => ["density", ""]}
             labelFormatter={(label: number) => `Delta = ${label.toFixed(3)}`}
           />
-          <ReferenceLine x={0} stroke="#8b919e" strokeDasharray="3 3" />
-          <ReferenceLine x={lo} stroke="#4f8bf5" strokeDasharray="2 4" />
-          <ReferenceLine x={hi} stroke="#4f8bf5" strokeDasharray="2 4" />
-          <Area dataKey="y" stroke="#4f8bf5" strokeWidth={1.5} fill="url(#posterior)" />
+          <ReferenceLine x={0} stroke="#8b8f99" strokeDasharray="3 3" />
+          <ReferenceLine x={lo} stroke="#e0a24a" strokeDasharray="2 4" />
+          <ReferenceLine x={hi} stroke="#e0a24a" strokeDasharray="2 4" />
+          <Area dataKey="y" stroke="#e0a24a" strokeWidth={1.5} fill="url(#posterior)" />
         </AreaChart>
       </ResponsiveContainer>
       <p className="mt-2 text-xs text-muted">
