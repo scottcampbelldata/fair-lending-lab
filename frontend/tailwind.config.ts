@@ -5,27 +5,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Warm-ink ground — deliberately off the cold GitHub-dark default.
-        bg: "#0e0f13",
-        surface: "#15171c",
-        "surface-hover": "#1b1e24",
-        border: "#272b33",
-        "border-strong": "#363b45",
-        // Warm paper-tone text for ledger gravitas.
-        text: "#e9e7e2",
-        muted: "#8b8f99",
-        faint: "#5b5e67",
+        // Tokens resolve through CSS variables (see globals.css) so the same
+        // class names theme for both light and dark. The `/<alpha-value>`
+        // utilities keep working because the vars are RGB channel triplets.
+        bg: "rgb(var(--bg) / <alpha-value>)",
+        surface: "rgb(var(--surface) / <alpha-value>)",
+        "surface-hover": "rgb(var(--surface-hover) / <alpha-value>)",
+        border: "rgb(var(--border) / <alpha-value>)",
+        "border-strong": "rgb(var(--border-strong) / <alpha-value>)",
+        text: "rgb(var(--text) / <alpha-value>)",
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        faint: "rgb(var(--faint) / <alpha-value>)",
         // Single signal: amber = flagged. The system raising a hand, not "good".
-        accent: "#e0a24a",
-        "accent-dim": "rgba(224,162,74,0.10)",
-        "accent-soft": "rgba(224,162,74,0.42)",
+        accent: "rgb(var(--accent) / <alpha-value>)",
+        "accent-dim": "rgb(var(--accent) / 0.10)",
+        "accent-soft": "rgb(var(--accent) / 0.42)",
         // Sober slate-cyan for methodological notes (the causal caveat register).
-        note: "#6e93a6",
-        "note-dim": "rgba(110,147,166,0.10)",
-        good: "#7faa72",
-        warn: "#6e93a6",
+        note: "rgb(var(--note) / <alpha-value>)",
+        "note-dim": "rgb(var(--note) / 0.10)",
+        good: "rgb(var(--good) / <alpha-value>)",
+        warn: "rgb(var(--warn) / <alpha-value>)",
         // Red is reserved for true errors only.
-        bad: "#e5484d",
+        bad: "rgb(var(--bad) / <alpha-value>)",
       },
       fontFamily: {
         display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],

@@ -1,3 +1,5 @@
+import { ThemeToggle } from "./ThemeToggle";
+
 interface Props {
   hmdaYear?: number;
   hmdaState?: string;
@@ -31,6 +33,7 @@ export function AppHeader({ hmdaYear, hmdaState, ok }: Props) {
             {ok ? "api live" : "api offline"}
           </span>
           <span className="text-faint">v0.1.0</span>
+          <ThemeToggle />
         </div>
       </div>
     </header>
@@ -49,10 +52,24 @@ function LabMark() {
       aria-hidden
       className="shrink-0"
     >
-      <rect x="0.5" y="0.5" width="33" height="33" rx="7" stroke="#272b33" />
-      <line x1="11" y1="9" x2="11" y2="25" stroke="#5b5e67" strokeWidth="1.5" />
-      <line x1="11" y1="17" x2="26" y2="17" stroke="#363b45" strokeWidth="1.5" />
-      <circle cx="22" cy="17" r="3.5" fill="#e0a24a" />
+      <rect
+        x="0.5"
+        y="0.5"
+        width="33"
+        height="33"
+        rx="7"
+        className="stroke-border"
+      />
+      <line x1="11" y1="9" x2="11" y2="25" strokeWidth="1.5" className="stroke-faint" />
+      <line
+        x1="11"
+        y1="17"
+        x2="26"
+        y2="17"
+        strokeWidth="1.5"
+        className="stroke-border-strong"
+      />
+      <circle cx="22" cy="17" r="3.5" className="fill-accent" />
     </svg>
   );
 }

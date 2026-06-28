@@ -89,7 +89,7 @@ export default function Page() {
       <AppHeader hmdaYear={health?.hmda_year} hmdaState={health?.hmda_state} ok={!!health?.ok} />
       <main className="mx-auto max-w-shell px-6 py-6">
         {err && (
-          <div className="mb-4 rounded-md border border-bad/40 bg-[rgba(229,72,77,0.08)] p-3 text-sm text-bad">
+          <div className="mb-4 rounded-md border border-bad/40 bg-bad/10 p-3 text-sm text-bad">
             <span className="font-mono text-xs uppercase tracking-wider">api error</span>{" "}
             {err}
           </div>

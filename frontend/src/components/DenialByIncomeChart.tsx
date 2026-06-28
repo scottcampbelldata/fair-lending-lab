@@ -1,6 +1,8 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useTheme } from "./ThemeProvider";
+import { chartTokens, RACE_SERIES, type ChartTokens } from "@/lib/chartTheme";
 
 interface Row {
   income_band: string;
@@ -30,17 +32,13 @@ const BAND_LABEL: Record<string, string> = {
 const MIN_N = 30;
 
 // Categorical hues, decoupled from the semantic amber signal — distinct in both
-// hue and lightness so the series stay separable.
-const palette: Record<string, string> = {
-  White: "#6f93c0",
-  Black: "#e0a24a",
-  Hispanic: "#8fb56b",
-  Asian: "#a98fd0",
-};
+// hue and lightness so the series stay separable. Shared with the legend/tooltip.
+const palette = RACE_SERIES;
 
 type ChartRow = { income_band: string } & Record<string, number | string | null>;
 
 export function DenialByIncomeChart({ data }: { data: Row[] }) {
+  const t = chartTokens(useTheme().theme);
   const pivot: Record<string, ChartRow> = {};
   for (const r of data) {
     if (!RACE_FOCUS.includes(r.race_group)) continue;
@@ -54,24 +52,24 @@ export function DenialByIncomeChart({ data }: { data: Row[] }) {
   return (
     <ResponsiveContainer width="100%" height={320}>
       <BarChart data={rows} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
-        <CartesianGrid stroke="#22262d" strokeDasharray="3 3" vertical={false} />
+        <CartesianGrid stroke={t.grid} strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey="income_band"
-          stroke="#8b8f99"
-          tick={{ fill: "#8b8f99", fontSize: 11 }}
+          stroke={t.tick}
+          tick={{ fill: t.tick, fontSize: 11 }}
           tickLine={false}
-          axisLine={{ stroke: "#272b33" }}
+          axisLine={{ stroke: t.axisLine }}
           tickFormatter={(v: string) => BAND_LABEL[v] ?? v}
         />
         <YAxis
-          stroke="#8b8f99"
-          tick={{ fill: "#8b8f99", fontSize: 11 }}
+          stroke={t.tick}
+          tick={{ fill: t.tick, fontSize: 11 }}
           tickLine={false}
-          axisLine={{ stroke: "#272b33" }}
+          axisLine={{ stroke: t.axisLine }}
           tickFormatter={(v) => `${Math.round(v * 100)}%`}
         />
-        <Tooltip cursor={{ fill: "rgba(224,162,74,0.07)" }} content={<IncomeTooltip />} />
-        <Legend wrapperStyle={{ color: "#8b8f99", fontSize: 11 }} />
+        <Tooltip cursor={{ fill: t.cursor }} content={<IncomeTooltip tokens={t} />} />
+        <Legend wrapperStyle={{ color: t.tick, fontSize: 11 }} />
         {RACE_FOCUS.map((g) => (
           <Bar key={g} dataKey={g} fill={palette[g]} radius={[2, 2, 0, 0]} />
         ))}
@@ -80,25 +78,26 @@ export function DenialByIncomeChart({ data }: { data: Row[] }) {
   );
 }
 
-function IncomeTooltip({ active, payload, label }: {
+function IncomeTooltip({ active, payload, label, tokens }: {
   active?: boolean;
   payload?: Array<{ payload: ChartRow }>;
   label?: string;
+  tokens?: ChartTokens;
 }) {
   if (!active || !payload?.length) return null;
   const row = payload[0].payload;
   return (
     <div
       style={{
-        background: "#15171c",
-        border: "1px solid #272b33",
+        background: tokens?.tooltipBg ?? "#15171c",
+        border: `1px solid ${tokens?.tooltipBorder ?? "#272b33"}`,
         borderRadius: 6,
-        color: "#e9e7e2",
+        color: tokens?.tooltipText ?? "#e9e7e2",
         fontSize: 12,
         padding: "8px 10px",
       }}
     >
-      <div style={{ color: "#8b8f99", marginBottom: 4 }}>
+      <div style={{ color: tokens?.tooltipLabel ?? "#8b8f99", marginBottom: 4 }}>
         {(label && BAND_LABEL[label]) ?? label}
       </div>
       {RACE_FOCUS.map((g) => {

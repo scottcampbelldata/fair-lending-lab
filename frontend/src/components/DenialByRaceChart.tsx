@@ -1,6 +1,8 @@
 "use client";
 
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useTheme } from "./ThemeProvider";
+import { chartTokens, RACE_SINGLE } from "@/lib/chartTheme";
 
 interface Row {
   race_group: string;
@@ -11,6 +13,7 @@ interface Row {
 }
 
 export function DenialByRaceChart({ data }: { data: Row[] }) {
+  const t = chartTokens(useTheme().theme);
   const ROW_ORDER = ["White", "Black", "Asian", "Hispanic", "Joint", "Native", "Pacific", "Multi", "Not Available"];
   const sorted = [...data].sort(
     (a, b) => ROW_ORDER.indexOf(a.race_group) - ROW_ORDER.indexOf(b.race_group),
@@ -18,32 +21,32 @@ export function DenialByRaceChart({ data }: { data: Row[] }) {
   return (
     <ResponsiveContainer width="100%" height={300}>
       <BarChart data={sorted} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
-        <CartesianGrid stroke="#22262d" strokeDasharray="3 3" vertical={false} />
+        <CartesianGrid stroke={t.grid} strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey="race_group"
-          stroke="#8b8f99"
-          tick={{ fill: "#8b8f99", fontSize: 11 }}
+          stroke={t.tick}
+          tick={{ fill: t.tick, fontSize: 11 }}
           tickLine={false}
-          axisLine={{ stroke: "#272b33" }}
+          axisLine={{ stroke: t.axisLine }}
         />
         <YAxis
-          stroke="#8b8f99"
-          tick={{ fill: "#8b8f99", fontSize: 11 }}
+          stroke={t.tick}
+          tick={{ fill: t.tick, fontSize: 11 }}
           tickLine={false}
-          axisLine={{ stroke: "#272b33" }}
+          axisLine={{ stroke: t.axisLine }}
           tickFormatter={(v) => `${Math.round(v * 100)}%`}
           domain={[0, "auto"]}
         />
         <Tooltip
-          cursor={{ fill: "rgba(224,162,74,0.07)" }}
+          cursor={{ fill: t.cursor }}
           contentStyle={{
-            background: "#15171c",
-            border: "1px solid #272b33",
+            background: t.tooltipBg,
+            border: `1px solid ${t.tooltipBorder}`,
             borderRadius: 6,
-            color: "#e9e7e2",
+            color: t.tooltipText,
             fontSize: 12,
           }}
-          labelStyle={{ color: "#8b8f99" }}
+          labelStyle={{ color: t.tooltipLabel }}
           formatter={(value: number, _name, item) => {
             if (item?.dataKey === "denial_rate") {
               return [`${(value * 100).toFixed(2)}%`, "denial rate"];
@@ -51,7 +54,7 @@ export function DenialByRaceChart({ data }: { data: Row[] }) {
             return [value.toLocaleString(), String(_name)];
           }}
         />
-        <Bar dataKey="denial_rate" fill="#6f93c0" radius={[2, 2, 0, 0]} />
+        <Bar dataKey="denial_rate" fill={RACE_SINGLE} radius={[2, 2, 0, 0]} />
       </BarChart>
     </ResponsiveContainer>
   );
