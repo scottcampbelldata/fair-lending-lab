@@ -1,6 +1,8 @@
 "use client";
 
 import { Area, AreaChart, CartesianGrid, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { useTheme } from "./ThemeProvider";
+import { chartTokens } from "@/lib/chartTheme";
 
 interface Props {
   mean: number;
@@ -12,6 +14,7 @@ interface Props {
 // Renders an approximate Normal-shaped posterior density given mean and 95% CI.
 // Used as a quick visual companion to the dashboard's Bayesian sensitivity block.
 export function PosteriorChart({ mean, lo, hi, probAGtB }: Props) {
+  const t = chartTokens(useTheme().theme);
   const sd = (hi - lo) / (2 * 1.96);
   const xs = Array.from({ length: 121 }, (_, i) => mean + (i - 60) * (sd / 12));
   const ys = xs.map((x) => {
@@ -25,36 +28,36 @@ export function PosteriorChart({ mean, lo, hi, probAGtB }: Props) {
         <AreaChart data={rows} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
           <defs>
             <linearGradient id="posterior" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#e0a24a" stopOpacity={0.5} />
-              <stop offset="100%" stopColor="#e0a24a" stopOpacity={0} />
+              <stop offset="0%" stopColor={t.accent} stopOpacity={0.5} />
+              <stop offset="100%" stopColor={t.accent} stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid stroke="#22262d" strokeDasharray="3 3" vertical={false} />
+          <CartesianGrid stroke={t.grid} strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="x"
-            stroke="#8b8f99"
-            tick={{ fill: "#8b8f99", fontSize: 10 }}
+            stroke={t.tick}
+            tick={{ fill: t.tick, fontSize: 10 }}
             tickLine={false}
-            axisLine={{ stroke: "#272b33" }}
+            axisLine={{ stroke: t.axisLine }}
             tickFormatter={(v: number) => v.toFixed(2)}
           />
           <YAxis hide />
           <Tooltip
             contentStyle={{
-              background: "#15171c",
-              border: "1px solid #272b33",
+              background: t.tooltipBg,
+              border: `1px solid ${t.tooltipBorder}`,
               borderRadius: 6,
-              color: "#e9e7e2",
+              color: t.tooltipText,
               fontSize: 11,
             }}
-            labelStyle={{ color: "#8b8f99" }}
+            labelStyle={{ color: t.tooltipLabel }}
             formatter={(_v: number) => ["density", ""]}
             labelFormatter={(label: number) => `Delta = ${label.toFixed(3)}`}
           />
-          <ReferenceLine x={0} stroke="#8b8f99" strokeDasharray="3 3" />
-          <ReferenceLine x={lo} stroke="#e0a24a" strokeDasharray="2 4" />
-          <ReferenceLine x={hi} stroke="#e0a24a" strokeDasharray="2 4" />
-          <Area dataKey="y" stroke="#e0a24a" strokeWidth={1.5} fill="url(#posterior)" />
+          <ReferenceLine x={0} stroke={t.tick} strokeDasharray="3 3" />
+          <ReferenceLine x={lo} stroke={t.accent} strokeDasharray="2 4" />
+          <ReferenceLine x={hi} stroke={t.accent} strokeDasharray="2 4" />
+          <Area dataKey="y" stroke={t.accent} strokeWidth={1.5} fill="url(#posterior)" />
         </AreaChart>
       </ResponsiveContainer>
       <p className="mt-2 text-xs text-muted">
