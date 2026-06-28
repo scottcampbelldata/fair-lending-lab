@@ -12,12 +12,18 @@ export function Panel({ title, subtitle, right, children, className = "" }: Prop
   return (
     <section className={`rounded-md border border-border bg-surface ${className}`}>
       {(title || right) && (
-        <header className="flex items-baseline justify-between border-b border-border px-5 py-3">
+        <header className="flex items-baseline justify-between gap-3 border-b border-border px-5 py-3.5">
           <div>
             {title && (
-              <h2 className="text-xs uppercase tracking-[0.14em] text-muted">{title}</h2>
+              <h2 className="font-mono text-[11px] uppercase tracking-[0.16em] text-muted">
+                {title}
+              </h2>
             )}
-            {subtitle && <p className="mt-0.5 text-sm text-text">{subtitle}</p>}
+            {subtitle && (
+              <p className="mt-1 font-display text-base font-medium tracking-tight text-text">
+                {subtitle}
+              </p>
+            )}
           </div>
           {right}
         </header>

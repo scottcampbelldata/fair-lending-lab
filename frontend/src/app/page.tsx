@@ -13,6 +13,7 @@ import { fmtCI, fmtEffect, fmtN, fmtP, fmtPct } from "@/lib/format";
 import { AppHeader } from "@/components/AppHeader";
 import { DenialByIncomeChart } from "@/components/DenialByIncomeChart";
 import { DenialByRaceChart } from "@/components/DenialByRaceChart";
+import { DisparityRuler } from "@/components/DisparityRuler";
 import { HypothesisCard } from "@/components/HypothesisCard";
 import { KpiCard } from "@/components/KpiCard";
 import { Panel } from "@/components/Panel";
@@ -88,14 +89,15 @@ export default function Page() {
       <AppHeader hmdaYear={health?.hmda_year} hmdaState={health?.hmda_state} ok={!!health?.ok} />
       <main className="mx-auto max-w-shell px-6 py-6">
         {err && (
-          <div className="mb-4 rounded-md border border-bad/40 bg-[rgba(248,81,73,0.08)] p-3 text-sm text-bad">
+          <div className="mb-4 rounded-md border border-bad/40 bg-[rgba(229,72,77,0.08)] p-3 text-sm text-bad">
+            <span className="font-mono text-xs uppercase tracking-wider">api error</span>{" "}
             {err}
           </div>
         )}
 
         <CalloutWhatMattersNow headline={headline} />
 
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 animate-rise-in [animation-delay:80ms]">
           <KpiCard
             label="curated applications"
             value={fmtN(overview?.counts.loans ?? null)}
@@ -106,7 +108,6 @@ export default function Page() {
                 "loading"
               )
             }
-            spark={[1, 1, 2, 3, 5, 8, 8, 10, 12, 14, 14, 16]}
           />
           <KpiCard
             label="hypotheses tested"
@@ -117,11 +118,13 @@ export default function Page() {
             label="significant at alpha 0.05"
             value={`${sigCount} / ${hypos.length}`}
             sub="raw, uncorrected"
+            flagged={sigCount > 0}
           />
           <KpiCard
             label="reject BH-FDR (q=0.05)"
             value={`${fdrReject} / ${hypos.length}`}
             sub={`Bonferroni at alpha/m: ${bonfReject} / ${hypos.length}`}
+            flagged={fdrReject > 0}
           />
         </div>
 
@@ -162,21 +165,38 @@ function CalloutWhatMattersNow({ headline }: { headline: HypothesisSummary | und
   const rd = headline.effect_size;
   const ci = `[${(headline.ci_low ?? 0).toFixed(3)}, ${(headline.ci_high ?? 0).toFixed(3)}]`;
   return (
-    <section className="rounded-md border border-accent/40 bg-accent-dim px-5 py-4">
-      <div className="text-xs uppercase tracking-wider text-accent">what matters now</div>
-      <p className="mt-2 text-sm leading-relaxed text-text">
-        <span className="font-mono text-accent">H1.</span>{" "}
-        <strong>Black non-Hispanic applicants show a higher observed denial rate</strong> than
-        White non-Hispanic applicants for first-lien conventional owner-occupied home-purchase
-        loans, by{" "}
-        <span className="font-mono text-text">
-          risk difference = {fmtPct(rd, 1)} (95% CI {ci})
-        </span>
-        . Confirmed by a two-proportion z-test (p = {fmtP(headline.p_value)}) and by the
-        Wald-CI odds ratio. The disparity persists inside the lowest income band (H5). All
-        five primary tests reject at BH-FDR q = 0.05 and Bonferroni. <em>This is a
-        screening signal, not a causal claim,</em> see the per-hypothesis caveat.
-      </p>
+    <section className="overflow-hidden rounded-md border border-accent-soft bg-accent-dim animate-rise-in">
+      <div className="grid gap-px sm:grid-cols-[1fr_auto]">
+        <div className="px-6 py-5">
+          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+            lead finding · H1
+          </div>
+          <p className="mt-3 max-w-2xl font-display text-lg font-medium leading-snug tracking-tight text-text text-balance">
+            Black non-Hispanic applicants are denied at a higher rate than White
+            non-Hispanic applicants for first-lien conventional owner-occupied
+            home-purchase loans.
+          </p>
+          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
+            Confirmed by a two-proportion z-test (p = {fmtP(headline.p_value)}) and the
+            Wald-CI odds ratio, and the gap persists inside the lowest income band (H5).
+            All five primary tests reject at BH-FDR q = 0.05 and Bonferroni.{" "}
+            <span className="text-note">
+              This is a screening signal, not a causal claim
+            </span>{" "}
+            — see the per-hypothesis caveat.
+          </p>
+        </div>
+        {/* The headline number, given the weight it deserves. */}
+        <div className="flex flex-col justify-center border-t border-accent-soft/40 bg-bg/30 px-6 py-5 sm:border-l sm:border-t-0">
+          <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+            risk difference
+          </div>
+          <div className="mt-1 font-mono text-4xl font-medium tabular-nums tracking-tight text-accent">
+            {fmtPct(rd, 1)}
+          </div>
+          <div className="mt-1 font-mono text-xs tabular-nums text-muted">95% CI {ci}</div>
+        </div>
+      </div>
     </section>
   );
 }
@@ -196,16 +216,16 @@ function TabNav({
     ["about", "About"],
   ] as const;
   return (
-    <nav className="mt-6 flex flex-wrap gap-1 border-b border-border">
+    <nav className="mt-7 flex flex-wrap gap-1 border-b border-border">
       {tabs.map(([k, label]) => (
         <button
           key={k}
           type="button"
           onClick={() => onChange(k)}
-          className={`-mb-px border-b-2 px-3 py-2 text-sm transition-colors ${
+          className={`-mb-px rounded-t-sm border-b-2 px-3.5 py-2.5 text-sm font-medium transition-colors ${
             tab === k
               ? "border-accent text-text"
-              : "border-transparent text-muted hover:text-text"
+              : "border-transparent text-muted hover:border-border-strong hover:text-text"
           }`}
         >
           {label}
@@ -228,6 +248,20 @@ function OverviewTab({
 }) {
   return (
     <div className="mt-6 grid gap-4 lg:grid-cols-2">
+      <Panel
+        title="disparity ruler"
+        subtitle="every effect estimate against its null"
+        className="lg:col-span-2"
+      >
+        <DisparityRuler hypos={hypos} />
+        <p className="mt-3 border-t border-border/60 pt-3 text-xs text-muted">
+          Each point is the primary effect estimate; the bar is its 95% confidence
+          interval; the tick marks the null (no disparity). A row reads amber when its
+          interval clears the null. Units differ by hypothesis — risk difference,
+          Hedges&apos; g, eta squared — so each row is scaled to itself and the exact
+          values sit alongside.
+        </p>
+      </Panel>
       <Panel title="denial rate by race" subtitle="all applications">
         <DenialByRaceChart data={byRace} />
         <p className="mt-2 text-xs text-muted">
@@ -267,7 +301,7 @@ function OverviewTab({
                       {h.primary_method ?? "-"}
                     </td>
                     <td className="px-4 py-2 font-mono tabular-nums">
-                      <span className={sig ? "text-good" : "text-muted"}>
+                      <span className={sig ? "text-accent" : "text-muted"}>
                         {fmtP(h.p_value)}
                       </span>
                     </td>

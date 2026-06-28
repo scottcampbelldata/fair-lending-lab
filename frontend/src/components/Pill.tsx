@@ -5,12 +5,15 @@ interface Props {
 }
 
 export function Pill({ tone = "neutral", mono = true, children }: Props) {
+  // Significance is "flagged", not "good": a rejected null here means a measured
+  // disparity, so it reads as the amber signal. Fail-to-reject is a quiet
+  // neutral, never red — a null result is not an error.
   const map: Record<string, string> = {
     neutral: "border-border bg-surface text-muted",
-    sig: "border-[rgba(63,185,80,0.4)] bg-[rgba(63,185,80,0.12)] text-good",
-    notsig: "border-[rgba(248,81,73,0.4)] bg-[rgba(248,81,73,0.12)] text-bad",
-    warn: "border-[rgba(210,153,34,0.4)] bg-[rgba(210,153,34,0.12)] text-warn",
-    accent: "border-[rgba(79,139,245,0.4)] bg-accent-dim text-accent",
+    sig: "border-accent-soft bg-accent-dim text-accent",
+    notsig: "border-border bg-surface text-muted",
+    warn: "border-[rgba(110,147,166,0.4)] bg-note-dim text-note",
+    accent: "border-accent-soft bg-accent-dim text-accent",
   };
   return (
     <span

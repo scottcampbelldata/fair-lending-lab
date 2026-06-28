@@ -13,17 +13,29 @@ interface Row {
 const BAND_ORDER = ["under_50k", "50k_to_100k", "100k_to_150k", "150k_to_250k", "over_250k", "unknown"];
 const RACE_FOCUS = ["White", "Black", "Hispanic", "Asian"];
 
+// Human-readable band labels — the raw keys ("50k_to_100k") read as code.
+const BAND_LABEL: Record<string, string> = {
+  under_50k: "< $50k",
+  "50k_to_100k": "$50–100k",
+  "100k_to_150k": "$100–150k",
+  "150k_to_250k": "$150–250k",
+  over_250k: "> $250k",
+  unknown: "Unknown",
+};
+
 // Minimum cell size before a denial rate is plotted. A band x race cell with a
 // handful of applications can read 0% or 100% purely from sampling noise; an
 // unsuppressed 100% bar looks broken even when it is technically correct.
 // Below this n we drop the bar and label the cell small-n in the tooltip.
 const MIN_N = 30;
 
+// Categorical hues, decoupled from the semantic amber signal — distinct in both
+// hue and lightness so the series stay separable.
 const palette: Record<string, string> = {
-  White: "#4f8bf5",
-  Black: "#d29922",
-  Hispanic: "#3fb950",
-  Asian: "#a371f7",
+  White: "#6f93c0",
+  Black: "#e0a24a",
+  Hispanic: "#8fb56b",
+  Asian: "#a98fd0",
 };
 
 type ChartRow = { income_band: string } & Record<string, number | string | null>;
@@ -42,23 +54,24 @@ export function DenialByIncomeChart({ data }: { data: Row[] }) {
   return (
     <ResponsiveContainer width="100%" height={320}>
       <BarChart data={rows} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
-        <CartesianGrid stroke="#1f2733" strokeDasharray="3 3" vertical={false} />
+        <CartesianGrid stroke="#22262d" strokeDasharray="3 3" vertical={false} />
         <XAxis
           dataKey="income_band"
-          stroke="#8b919e"
-          tick={{ fill: "#8b919e", fontSize: 11 }}
+          stroke="#8b8f99"
+          tick={{ fill: "#8b8f99", fontSize: 11 }}
           tickLine={false}
-          axisLine={{ stroke: "#23262d" }}
+          axisLine={{ stroke: "#272b33" }}
+          tickFormatter={(v: string) => BAND_LABEL[v] ?? v}
         />
         <YAxis
-          stroke="#8b919e"
-          tick={{ fill: "#8b919e", fontSize: 11 }}
+          stroke="#8b8f99"
+          tick={{ fill: "#8b8f99", fontSize: 11 }}
           tickLine={false}
-          axisLine={{ stroke: "#23262d" }}
+          axisLine={{ stroke: "#272b33" }}
           tickFormatter={(v) => `${Math.round(v * 100)}%`}
         />
-        <Tooltip cursor={{ fill: "rgba(79,139,245,0.07)" }} content={<IncomeTooltip />} />
-        <Legend wrapperStyle={{ color: "#8b919e", fontSize: 11 }} />
+        <Tooltip cursor={{ fill: "rgba(224,162,74,0.07)" }} content={<IncomeTooltip />} />
+        <Legend wrapperStyle={{ color: "#8b8f99", fontSize: 11 }} />
         {RACE_FOCUS.map((g) => (
           <Bar key={g} dataKey={g} fill={palette[g]} radius={[2, 2, 0, 0]} />
         ))}
@@ -77,15 +90,17 @@ function IncomeTooltip({ active, payload, label }: {
   return (
     <div
       style={{
-        background: "#131519",
-        border: "1px solid #23262d",
+        background: "#15171c",
+        border: "1px solid #272b33",
         borderRadius: 6,
-        color: "#e5e7eb",
+        color: "#e9e7e2",
         fontSize: 12,
         padding: "8px 10px",
       }}
     >
-      <div style={{ color: "#8b919e", marginBottom: 4 }}>{label}</div>
+      <div style={{ color: "#8b8f99", marginBottom: 4 }}>
+        {(label && BAND_LABEL[label]) ?? label}
+      </div>
       {RACE_FOCUS.map((g) => {
         const rate = row[g] as number | null;
         const n = (row[`${g}__n`] as number | undefined) ?? 0;
