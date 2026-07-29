@@ -146,9 +146,9 @@ def two_proportion_z(
     else:
         z = (p_a - p_b) / se
     if alternative == "two-sided":
-        p = 2 * (1 - stats.norm.cdf(abs(z)))
+        p = 2 * stats.norm.sf(abs(z))
     elif alternative == "greater":
-        p = 1 - stats.norm.cdf(z)
+        p = stats.norm.sf(z)
     else:
         p = stats.norm.cdf(z)
     rd = risk_difference_ci(x_a, n_a, x_b, n_b)
@@ -177,7 +177,7 @@ def two_proportion_or(x_a: int, n_a: int, x_b: int, n_b: int) -> BinaryResult:
     p_pool = (x_a + x_b) / (n_a + n_b)
     se = np.sqrt(p_pool * (1 - p_pool) * (1 / n_a + 1 / n_b))
     z = (p_a - p_b) / se if se > 0 else 0.0
-    p = 2 * (1 - stats.norm.cdf(abs(z)))
+    p = 2 * stats.norm.sf(abs(z))
     or_ = odds_ratio_ci(x_a, n_a, x_b, n_b)
     return BinaryResult(
         method="odds_ratio",
