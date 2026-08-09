@@ -6,46 +6,45 @@
    working in both themes. Dark is the default; light is the printed-report
    counterpart. */
 :root {
-  --bg: 14 15 19;
-  --surface: 21 23 28;
-  --surface-hover: 27 30 36;
-  --border: 39 43 51;
-  --border-strong: 54 59 69;
-  --text: 233 231 226;
-  --muted: 139 143 153;
-  --faint: 91 94 103;
-  --accent: 224 162 74;
-  --note: 110 147 166;
-  --good: 127 170 114;
-  --warn: 110 147 166;
-  --bad: 229 72 77;
+  --bg: 17 15 18;
+  --surface: 25 22 27;
+  --surface-hover: 33 29 35;
+  --border: 49 43 51;
+  --border-strong: 69 58 69;
+  --text: 236 231 234;
+  --muted: 160 145 154;
+  --faint: 108 97 105;
+  --accent: 211 162 197;
+  --note: 123 160 179;
+  --good: 126 169 132;
+  --warn: 214 171 89;
+  --bad: 226 112 129;
 
   --ledger-line: rgba(255, 255, 255, 0.014);
-  --selection: rgba(224, 162, 74, 0.22);
+  --selection: rgba(211, 162, 197, 0.20);
   --scrollbar: #2c313a;
   --scrollbar-hover: #3a404b;
   color-scheme: dark;
 }
 
 [data-theme="light"] {
-  --bg: 244 243 239;
+  --bg: 247 245 247;
   --surface: 255 255 255;
-  --surface-hover: 246 245 241;
-  --border: 228 225 217;
-  --border-strong: 204 200 189;
-  --text: 28 29 34;
-  --muted: 93 97 107;
-  --faint: 138 142 152;
-  /* Amber darkens to a gold-leaf ochre so it stays a legible signal and passes
-     contrast as small text on paper. */
-  --accent: 169 110 21;
-  --note: 77 114 134;
+  --surface-hover: 243 239 243;
+  --border: 228 222 227;
+  --border-strong: 201 188 198;
+  --text: 33 28 32;
+  --muted: 101 91 99;
+  --faint: 149 138 146;
+  /* Deep plum keeps the civic editorial identity legible in light mode. */
+  --accent: 107 58 96;
+  --note: 70 105 122;
   --good: 79 125 82;
-  --warn: 77 114 134;
-  --bad: 196 50 47;
+  --warn: 138 106 34;
+  --bad: 168 61 74;
 
   --ledger-line: rgba(40, 42, 54, 0.035);
-  --selection: rgba(169, 110, 21, 0.16);
+  --selection: rgba(107, 58, 96, 0.14);
   --scrollbar: #d6d2c8;
   --scrollbar-hover: #c2bdb0;
   color-scheme: light;
