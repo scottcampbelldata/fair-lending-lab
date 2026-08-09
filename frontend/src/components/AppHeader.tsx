@@ -40,7 +40,7 @@ export function AppHeader({ hmdaYear, hmdaState, ok }: Props) {
   );
 }
 
-// A small instrument mark: a point estimate sitting to the right of the null —
+// A small instrument mark: a point estimate sitting to the right of the null,
 // the page's whole argument compressed into a glyph.
 function LabMark() {
   return (

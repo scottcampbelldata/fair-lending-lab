@@ -181,9 +181,9 @@ function CalloutWhatMattersNow({ headline }: { headline: HypothesisSummary | und
             Wald-CI odds ratio, and the gap persists inside the lowest income band (H5).
             All five primary tests reject at BH-FDR q = 0.05 and Bonferroni.{" "}
             <span className="text-note">
-              This is a screening signal, not a causal claim
+              This is a screening signal, not a causal claim.
             </span>{" "}
-            — see the per-hypothesis caveat.
+            See the per-hypothesis caveat.
           </p>
         </div>
         {/* The headline number, given the weight it deserves. */}
@@ -257,8 +257,8 @@ function OverviewTab({
         <p className="mt-3 border-t border-border/60 pt-3 text-xs text-muted">
           Each point is the primary effect estimate; the bar is its 95% confidence
           interval; the tick marks the null (no disparity). A row reads amber when its
-          interval clears the null. Units differ by hypothesis — risk difference,
-          Hedges&apos; g, eta squared — so each row is scaled to itself and the exact
+          interval clears the null. Units differ by hypothesis: risk difference,
+          Hedges&apos; g, eta squared. Each row is scaled to itself and the exact
           values sit alongside.
         </p>
       </Panel>

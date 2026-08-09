@@ -5,9 +5,9 @@ a dataclass with statistic, p_value, effect_size, confidence interval, and any
 auxiliary diagnostic fields. Seeds default to flab.config.get_random_seed().
 """
 from flab.stats.effects import (
+    cliffs_delta,
     cohens_d,
     cohens_d_ci,
-    cliffs_delta,
     odds_ratio_ci,
     rank_biserial,
     risk_difference_ci,

@@ -25,7 +25,6 @@ from flab.stats import (
 )
 from flab.stats.tests import two_proportion_or
 
-
 # --- cohens d --------------------------------------------------------------
 
 def test_cohens_d_zero_when_identical():

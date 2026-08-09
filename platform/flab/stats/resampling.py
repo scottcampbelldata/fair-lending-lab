@@ -22,7 +22,7 @@ def _new_rng(seed: int | None) -> np.random.Generator:
     return np.random.default_rng(seed if seed is not None else get_random_seed())
 
 
-def bootstrap_ci(
+def bootstrap_ci(  # noqa: PLR0917 - Preserve the public positional API.
     a: np.ndarray,
     b: np.ndarray | None = None,
     stat: Callable | None = None,
@@ -48,7 +48,7 @@ def bootstrap_ci(
     else:
         b = np.asarray(b, dtype=float)
         if stat is None:
-            def stat(x, y):  # noqa: E306
+            def stat(x, y):
                 return float(np.mean(x) - np.mean(y))
         boots = np.empty(n_resamples)
         for i in range(n_resamples):

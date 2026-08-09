@@ -141,10 +141,7 @@ def two_proportion_z(
     p_a, p_b = x_a / n_a, x_b / n_b
     p_pool = (x_a + x_b) / (n_a + n_b)
     se = np.sqrt(p_pool * (1 - p_pool) * (1 / n_a + 1 / n_b))
-    if se == 0:
-        z = 0.0
-    else:
-        z = (p_a - p_b) / se
+    z = 0.0 if se == 0 else (p_a - p_b) / se
     if alternative == "two-sided":
         p = 2 * stats.norm.sf(abs(z))
     elif alternative == "greater":
@@ -227,8 +224,10 @@ def anova_oneway(groups: dict[str, np.ndarray]) -> AnovaResult:
         df_within=df_within,
         eta_squared=float(max(0.0, eta_sq)),
         omega_squared=float(max(0.0, omega_sq)),
-        group_means={lab: float(arr.mean()) for lab, arr in zip(labels, arrays)},
-        group_ns={lab: int(len(arr)) for lab, arr in zip(labels, arrays)},
+        group_means={
+            lab: float(arr.mean()) for lab, arr in zip(labels, arrays, strict=True)
+        },
+        group_ns={lab: len(arr) for lab, arr in zip(labels, arrays, strict=True)},
     )
 
 
@@ -251,8 +250,10 @@ def kruskal_wallis(groups: dict[str, np.ndarray]) -> AnovaResult:
         df_within=n_total - k,
         eta_squared=float(eps_sq),
         omega_squared=float(eps_sq),
-        group_means={lab: float(np.median(arr)) for lab, arr in zip(labels, arrays)},
-        group_ns={lab: int(len(arr)) for lab, arr in zip(labels, arrays)},
+        group_means={
+            lab: float(np.median(arr)) for lab, arr in zip(labels, arrays, strict=True)
+        },
+        group_ns={lab: len(arr) for lab, arr in zip(labels, arrays, strict=True)},
     )
 
 

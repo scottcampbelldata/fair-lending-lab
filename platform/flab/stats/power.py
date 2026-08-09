@@ -19,7 +19,7 @@ def sample_size_two_means(
     z_a = stats.norm.ppf(1 - alpha / 2)
     z_b = stats.norm.ppf(power)
     n_per_group = (z_a + z_b) ** 2 * (1 + 1 / ratio) / (effect_size**2)
-    return int(math.ceil(n_per_group))
+    return math.ceil(n_per_group)
 
 
 def sample_size_two_props(
@@ -36,7 +36,7 @@ def sample_size_two_props(
         + z_b * math.sqrt(p1 * (1 - p1) + p2 * (1 - p2))
     ) ** 2
     n = num / (p1 - p2) ** 2
-    return int(math.ceil(n))
+    return math.ceil(n)
 
 
 def minimum_detectable_effect_two_means(

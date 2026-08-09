@@ -15,12 +15,12 @@ interface Row {
 const BAND_ORDER = ["under_50k", "50k_to_100k", "100k_to_150k", "150k_to_250k", "over_250k", "unknown"];
 const RACE_FOCUS = ["White", "Black", "Hispanic", "Asian"];
 
-// Human-readable band labels — the raw keys ("50k_to_100k") read as code.
+// Human-readable band labels; the raw keys ("50k_to_100k") read as code.
 const BAND_LABEL: Record<string, string> = {
   under_50k: "< $50k",
-  "50k_to_100k": "$50–100k",
-  "100k_to_150k": "$100–150k",
-  "150k_to_250k": "$150–250k",
+  "50k_to_100k": "$50k to $100k",
+  "100k_to_150k": "$100k to $150k",
+  "150k_to_250k": "$150k to $250k",
   over_250k: "> $250k",
   unknown: "Unknown",
 };
@@ -31,7 +31,7 @@ const BAND_LABEL: Record<string, string> = {
 // Below this n we drop the bar and label the cell small-n in the tooltip.
 const MIN_N = 30;
 
-// Categorical hues, decoupled from the semantic amber signal — distinct in both
+// Categorical hues, decoupled from the semantic amber signal, are distinct in both
 // hue and lightness so the series stay separable. Shared with the legend/tooltip.
 const palette = RACE_SERIES;
 

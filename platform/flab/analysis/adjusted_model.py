@@ -365,7 +365,7 @@ def run_spec(name: str, f: pd.DataFrame, cluster: bool) -> SpecResult:
     log_or_se = float(res.bse[j])
     return SpecResult(
         spec=name,
-        n=int(len(f)),
+        n=len(f),
         n_black=int(f["black"].sum()),
         n_white=int((1 - f["black"]).sum()),
         n_params=int(X.shape[1]),
@@ -490,9 +490,9 @@ def main(argv: list[str] | None = None) -> int:
         "source_csv": str(csv_path),
         "year": args.year,
         "state": args.state,
-        "n_curated": int(len(curated)),
+        "n_curated": len(curated),
         "cohort": {
-            "n": int(len(f)),
+            "n": len(f),
             "n_black": int(f["black"].sum()),
             "n_white": int((1 - f["black"]).sum()),
             "denial_rate_black": float(f.loc[f.black == 1, "denied"].mean()),

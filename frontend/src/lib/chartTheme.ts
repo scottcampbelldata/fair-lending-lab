@@ -42,7 +42,7 @@ export function chartTokens(theme: Theme): ChartTokens {
   };
 }
 
-// Categorical race-series hues. Held constant across themes — they read on both
+// Categorical race-series hues. Held constant across themes, they read on both
 // paper and ink as filled bars, and keeping them stable preserves the legend's
 // meaning when a reader switches themes.
 export const RACE_SERIES: Record<string, string> = {

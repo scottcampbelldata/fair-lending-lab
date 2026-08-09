@@ -5,7 +5,7 @@ import { ThemeProvider, themeInitScript } from "@/components/ThemeProvider";
 
 // Deliberate trio: Space Grotesk (display, technical character),
 // IBM Plex Sans (humanist body that coheres with the mono),
-// IBM Plex Mono (the data face — estimates, p-values, intervals).
+// IBM Plex Mono (the data face for estimates, p-values, and intervals).
 const display = Space_Grotesk({
   subsets: ["latin"],
   weight: ["500", "600", "700"],

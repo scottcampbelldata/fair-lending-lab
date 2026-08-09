@@ -14,6 +14,7 @@ randomized testing. The dashboard repeats this caveat next to every result.
 from __future__ import annotations
 
 import json
+import math
 from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from typing import Any
@@ -65,7 +66,7 @@ def _sample(df: pd.DataFrame, n: int, seed: int) -> pd.DataFrame:
 def _summary_continuous(a: np.ndarray, b: np.ndarray, name_a: str, name_b: str) -> dict:
     return {
         name_a: {
-            "n": int(len(a)),
+            "n": len(a),
             "mean": float(a.mean()),
             "median": float(np.median(a)),
             "sd": float(a.std(ddof=1)) if len(a) > 1 else 0.0,
@@ -73,7 +74,7 @@ def _summary_continuous(a: np.ndarray, b: np.ndarray, name_a: str, name_b: str) 
             "p75": float(np.quantile(a, 0.75)),
         },
         name_b: {
-            "n": int(len(b)),
+            "n": len(b),
             "mean": float(b.mean()),
             "median": float(np.median(b)),
             "sd": float(b.std(ddof=1)) if len(b) > 1 else 0.0,
@@ -88,14 +89,12 @@ def _safe_for_json(obj):
         return {k: _safe_for_json(v) for k, v in obj.items()}
     if isinstance(obj, (list, tuple)):
         return [_safe_for_json(x) for x in obj]
-    if isinstance(obj, float):
-        if obj != obj:
-            return None
-        if obj == float("inf"):
-            return 1e308
-        if obj == float("-inf"):
-            return -1e308
+    if not isinstance(obj, float):
         return obj
+    if math.isnan(obj):
+        return None
+    if math.isinf(obj):
+        return math.copysign(1e308, obj)
     return obj
 
 
@@ -104,7 +103,6 @@ def _safe_for_json(obj):
 # ---------------------------------------------------------------------------
 
 def _runner_h1(opts: dict) -> dict:
-    seed = opts.get("seed", get_random_seed())
     df = fetch_df(
         """
         SELECT race_group, ethnicity_group, denied
@@ -115,8 +113,8 @@ def _runner_h1(opts: dict) -> dict:
     )
     a = df[df["race_group"] == "Black"]
     b = df[df["race_group"] == "White"]
-    x_a, n_a = int(a["denied"].sum()), int(len(a))
-    x_b, n_b = int(b["denied"].sum()), int(len(b))
+    x_a, n_a = int(a["denied"].sum()), len(a)
+    x_b, n_b = int(b["denied"].sum()), len(b)
 
     z = two_proportion_z(x_a, n_a, x_b, n_b, alternative="greater")
     or_ = two_proportion_or(x_a, n_a, x_b, n_b)
@@ -206,8 +204,8 @@ def _runner_h2(opts: dict) -> dict:
     )
     a = df[df["ethnicity_group"] == "Hispanic"]
     b = df[(df["race_group"] == "White") & (df["ethnicity_group"] == "Non-Hispanic")]
-    x_a, n_a = int(a["denied"].sum()), int(len(a))
-    x_b, n_b = int(b["denied"].sum()), int(len(b))
+    x_a, n_a = int(a["denied"].sum()), len(a)
+    x_b, n_b = int(b["denied"].sum()), len(b)
 
     z = two_proportion_z(x_a, n_a, x_b, n_b, alternative="greater")
     or_ = two_proportion_or(x_a, n_a, x_b, n_b)
@@ -250,7 +248,7 @@ def _runner_h3(opts: dict) -> dict:
     if len(a) < 30 or len(b) < 30:
         return _safe_for_json({
             "primary": {"method": "welch_t", "p_value": None, "effect_size": None,
-                        "effect_label": "Hedges' g", "n_a": int(len(a)), "n_b": int(len(b)),
+                        "effect_label": "Hedges' g", "n_a": len(a), "n_b": len(b),
                         "ci_low": None, "ci_high": None,
                         "statistic": None, "mean_a": float(a.mean()) if len(a) else None,
                         "mean_b": float(b.mean()) if len(b) else None, "df": None,
@@ -323,8 +321,8 @@ def _runner_h4(opts: dict) -> dict:
     keys = list(groups.keys())
     for i, k1 in enumerate(keys):
         for k2 in keys[i + 1 :]:
-            xa = int(groups[k1].sum()); na = int(len(groups[k1]))
-            xb = int(groups[k2].sum()); nb = int(len(groups[k2]))
+            xa = int(groups[k1].sum()); na = len(groups[k1])
+            xb = int(groups[k2].sum()); nb = len(groups[k2])
             if min(na, nb) < 30:
                 continue
             zr = two_proportion_z(xa, na, xb, nb)
@@ -357,7 +355,7 @@ def _runner_h4(opts: dict) -> dict:
         "power": {"k_groups": len(groups),
                   "n_per_group_min": int(min(len(arr) for arr in groups.values()))},
         "groups": {
-            k: {"n": int(len(arr)), "denial_rate": float(arr.mean()), "n_denied": int(arr.sum())}
+            k: {"n": len(arr), "denial_rate": float(arr.mean()), "n_denied": int(arr.sum())}
             for k, arr in groups.items()
         },
         "lender_table": [
@@ -385,8 +383,8 @@ def _runner_h5(opts: dict) -> dict:
     )
     a = df[df["race_group"] == "Black"]
     b = df[df["race_group"] == "White"]
-    x_a, n_a = int(a["denied"].sum()), int(len(a))
-    x_b, n_b = int(b["denied"].sum()), int(len(b))
+    x_a, n_a = int(a["denied"].sum()), len(a)
+    x_b, n_b = int(b["denied"].sum()), len(b)
     if min(n_a, n_b) < 30:
         return {"primary": {"method": "two_prop_z", "p_value": None,
                             "n_a": n_a, "n_b": n_b,

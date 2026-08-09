@@ -15,7 +15,7 @@ const Ctx = createContext<ThemeCtx | null>(null);
 export const THEME_STORAGE_KEY = "flab-theme";
 
 // Runs before paint (injected in <head>) so the document opens in the right
-// theme — no flash of the wrong palette on load.
+// theme, with no flash of the wrong palette on load.
 export const themeInitScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');if(!t){t=window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}document.documentElement.dataset.theme=t;}catch(e){document.documentElement.dataset.theme='dark';}})();`;
 
 function readDocTheme(): Theme {

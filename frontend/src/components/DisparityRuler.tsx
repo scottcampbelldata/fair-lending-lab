@@ -3,7 +3,7 @@ import { fmtCI, fmtEffect, fmtP } from "@/lib/format";
 
 // The signature figure: a forest plot of every preregistered effect estimate
 // against its null. Each row anchors the null at a fixed left position and
-// scales its own positive extent, so the eye reads one thing across all rows —
+// scales its own positive extent, so the eye reads one thing across all rows:
 // does the 95% interval clear zero? Units differ between hypotheses (risk
 // difference, Hedges' g, eta squared), so each row is self-scaled and labelled
 // with its metric; the numbers carry the exact magnitude.
@@ -45,7 +45,7 @@ function Row({ h }: { h: HypothesisSummary }) {
           <span className="truncate font-sans text-sm text-text">{h.title}</span>
         </div>
         <div className="mt-0.5 font-mono text-[11px] text-faint">
-          {h.effect_label ?? "effect"} · {h.primary_method ?? "—"}
+          {h.effect_label ?? "effect"} · {h.primary_method ?? "n/a"}
         </div>
       </div>
 
