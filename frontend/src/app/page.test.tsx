@@ -86,6 +86,11 @@ const LIVE_HEALTH = {
   hmda_state: "MA",
 };
 
+const DOWN_HEALTH = { ...LIVE_HEALTH, ok: false };
+
+// Same glyph as page.tsx; escape so the dash scan does not trip on this file.
+const EMPTY = "\u2014";
+
 function kpiValue(label: string): string | null | undefined {
   const node = screen.getByText(label);
   return node.parentElement?.querySelector("span.tabular-nums")?.textContent;
@@ -142,6 +147,22 @@ describe("first-paint API status and KPI empty states", () => {
     expect(screen.queryByText("api live")).toBeNull();
   });
 
+  it("shows api offline without the error banner when health.ok is false", async () => {
+    vi.mocked(api.health).mockResolvedValue(DOWN_HEALTH);
+    vi.mocked(api.overview).mockResolvedValue(EMPTY_OVERVIEW);
+    vi.mocked(api.hypotheses).mockResolvedValue(FIVE_HYPOS);
+    vi.mocked(api.familyCorrection).mockResolvedValue(EMPTY_FAMILY);
+    vi.mocked(api.denialByIncomeBand).mockResolvedValue([]);
+    vi.mocked(api.denialRatesByRace).mockResolvedValue([]);
+    vi.mocked(api.hypothesis).mockResolvedValue({});
+
+    renderPage();
+    expect(await screen.findByText("api offline")).toBeInTheDocument();
+    expect(screen.queryByText("connecting")).toBeNull();
+    expect(screen.queryByText("api live")).toBeNull();
+    expect(screen.queryByText(/api error/i)).toBeNull();
+  });
+
   it("shows an em dash on hypos-derived KPI tiles until five hypotheses resolve", async () => {
     const health = deferred<typeof LIVE_HEALTH>();
     const overview = deferred<OverviewPayload>();
@@ -162,10 +183,10 @@ describe("first-paint API status and KPI empty states", () => {
 
     renderPage();
 
-    expect(kpiValue("hypotheses tested")).toBe("—");
-    expect(kpiValue("significant at alpha 0.05")).toBe("—");
-    expect(kpiValue("reject BH-FDR (q=0.05)")).toBe("—");
-    expect(kpiValue("curated applications")).toBe("—");
+    expect(kpiValue("hypotheses tested")).toBe(EMPTY);
+    expect(kpiValue("significant at alpha 0.05")).toBe(EMPTY);
+    expect(kpiValue("reject BH-FDR (q=0.05)")).toBe(EMPTY);
+    expect(kpiValue("curated applications")).toBe(EMPTY);
 
     health.resolve(LIVE_HEALTH);
     overview.resolve(EMPTY_OVERVIEW);

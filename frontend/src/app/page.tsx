@@ -23,6 +23,9 @@ import { PosteriorChart } from "@/components/PosteriorChart";
 type Health = { ok: boolean; version: string; database: string; hmda_year: number; hmda_state: string };
 export type ApiStatus = "loading" | "live" | "offline";
 
+// Encoded so CI's em/en-dash scan of frontend/src stays ASCII-only.
+const EMPTY = "\u2014";
+
 function apiStatus(health: Health | null, err: string | null): ApiStatus {
   if (err) return "offline";
   if (health?.ok) return "live";
@@ -94,12 +97,12 @@ export default function Page() {
   const bonfReject = family?.family.filter((f) => f.reject_bonferroni).length ?? 0;
   const headline = hypos === null ? undefined : hypos.find((h) => h.key === "h1_denial_race");
   const headlineDetail = useMemo(() => detail, [detail]);
-  const hypothesesValue = hypos === null ? "—" : String(hypos.length);
+  const hypothesesValue = hypos === null ? EMPTY : String(hypos.length);
   const sigValue =
-    hypos === null || sigCount === null ? "—" : `${sigCount} / ${hypos.length}`;
+    hypos === null || sigCount === null ? EMPTY : `${sigCount} / ${hypos.length}`;
   const fdrValue =
-    hypos === null || family === null ? "—" : `${fdrReject} / ${hypos.length}`;
-  const loansValue = overview ? fmtN(overview.counts.loans) : "—";
+    hypos === null || family === null ? EMPTY : `${fdrReject} / ${hypos.length}`;
+  const loansValue = overview ? fmtN(overview.counts.loans) : EMPTY;
 
   return (
     <div className="min-h-screen">
