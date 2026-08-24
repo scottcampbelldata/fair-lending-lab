@@ -6,6 +6,7 @@
     "dev": "next dev -p 3001",
     "build": "next build",
     "start": "next start -p 3001",
+    "test": "vitest run",
     "clean": "node -e \"for (const d of ['.next','out']) require('fs').rmSync(d,{recursive:true,force:true})\""
   },
   "dependencies": {
@@ -15,12 +16,18 @@
     "recharts": "2.13.3"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/react": "16.3.2",
     "@types/node": "20.14.10",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.7.0",
     "autoprefixer": "10.4.20",
+    "jsdom": "25.0.1",
     "postcss": "8.5.10",
     "tailwindcss": "3.4.17",
-    "typescript": "5.6.3"
+    "typescript": "5.6.3",
+    "vite": "5.4.21",
+    "vitest": "2.1.9"
   }
 }

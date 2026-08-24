@@ -21,6 +21,15 @@ import { Pill } from "@/components/Pill";
 import { PosteriorChart } from "@/components/PosteriorChart";
 
 type Health = { ok: boolean; version: string; database: string; hmda_year: number; hmda_state: string };
+export type ApiStatus = "loading" | "live" | "offline";
+
+function apiStatus(health: Health | null, err: string | null): ApiStatus {
+  if (err) return "offline";
+  if (health?.ok) return "live";
+  if (health && health.ok === false) return "offline";
+  return "loading";
+}
+
 type HypothesisDetail = Record<string, unknown> & {
   primary?: Record<string, unknown>;
   secondary?: Record<string, unknown>;
@@ -33,7 +42,7 @@ type HypothesisDetail = Record<string, unknown> & {
 export default function Page() {
   const [health, setHealth] = useState<Health | null>(null);
   const [overview, setOverview] = useState<OverviewPayload | null>(null);
-  const [hypos, setHypos] = useState<HypothesisSummary[]>([]);
+  const [hypos, setHypos] = useState<HypothesisSummary[] | null>(null);
   const [family, setFamily] = useState<FamilyCorrection | null>(null);
   const [byBand, setByBand] = useState<DenialByIncomeBand[]>([]);
   const [byRace, setByRace] = useState<
@@ -78,15 +87,27 @@ export default function Page() {
       .catch((e) => setErr(String(e)));
   }, [selectedKey]);
 
-  const sigCount = hypos.filter((h) => h.p_value !== null && h.p_value < 0.05).length;
+  const hyposReady: HypothesisSummary[] = hypos ?? [];
+  const sigCount =
+    hypos === null ? null : hypos.filter((h) => h.p_value !== null && h.p_value < 0.05).length;
   const fdrReject = family?.family.filter((f) => f.reject_fdr).length ?? 0;
   const bonfReject = family?.family.filter((f) => f.reject_bonferroni).length ?? 0;
-  const headline = hypos.find((h) => h.key === "h1_denial_race");
+  const headline = hypos === null ? undefined : hypos.find((h) => h.key === "h1_denial_race");
   const headlineDetail = useMemo(() => detail, [detail]);
+  const hypothesesValue = hypos === null ? "—" : String(hypos.length);
+  const sigValue =
+    hypos === null || sigCount === null ? "—" : `${sigCount} / ${hypos.length}`;
+  const fdrValue =
+    hypos === null || family === null ? "—" : `${fdrReject} / ${hypos.length}`;
+  const loansValue = overview ? fmtN(overview.counts.loans) : "—";
 
   return (
     <div className="min-h-screen">
-      <AppHeader hmdaYear={health?.hmda_year} hmdaState={health?.hmda_state} ok={!!health?.ok} />
+      <AppHeader
+        hmdaYear={health?.hmda_year}
+        hmdaState={health?.hmda_state}
+        status={apiStatus(health, err)}
+      />
       <main className="mx-auto max-w-shell px-6 py-6">
         {err && (
           <div className="mb-4 rounded-md border border-bad/40 bg-bad/10 p-3 text-sm text-bad">
@@ -100,7 +121,7 @@ export default function Page() {
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 animate-rise-in [animation-delay:80ms]">
           <KpiCard
             label="curated applications"
-            value={fmtN(overview?.counts.loans ?? null)}
+            value={loansValue}
             sub={
               overview ? (
                 <>filtered from {fmtN(overview.counts.hmda_raw)} raw LAR rows</>
@@ -111,19 +132,23 @@ export default function Page() {
           />
           <KpiCard
             label="hypotheses tested"
-            value={`${hypos.length}`}
+            value={hypothesesValue}
             sub="preregistered H0 / H1 with effect targets"
           />
           <KpiCard
             label="significant at alpha 0.05"
-            value={`${sigCount} / ${hypos.length}`}
+            value={sigValue}
             sub="raw, uncorrected"
-            flagged={sigCount > 0}
+            flagged={sigCount !== null && sigCount > 0}
           />
           <KpiCard
             label="reject BH-FDR (q=0.05)"
-            value={`${fdrReject} / ${hypos.length}`}
-            sub={`Bonferroni at alpha/m: ${bonfReject} / ${hypos.length}`}
+            value={fdrValue}
+            sub={
+              hypos === null
+                ? "Bonferroni at alpha/m"
+                : `Bonferroni at alpha/m: ${bonfReject} / ${hypos.length}`
+            }
             flagged={fdrReject > 0}
           />
         </div>
@@ -135,18 +160,18 @@ export default function Page() {
             overview={overview}
             byRace={byRace}
             byBand={byBand}
-            hypos={hypos}
+            hypos={hyposReady}
           />
         )}
         {tab === "hypotheses" && (
           <HypothesesTab
-            hypos={hypos}
+            hypos={hyposReady}
             selectedKey={selectedKey}
             onSelect={setSelectedKey}
             detail={headlineDetail}
           />
         )}
-        {tab === "family" && family && <FamilyTab family={family} hypos={hypos} />}
+        {tab === "family" && family && <FamilyTab family={family} hypos={hyposReady} />}
         {tab === "methods" && <MethodsTab />}
         {tab === "about" && <AboutTab health={health} />}
 

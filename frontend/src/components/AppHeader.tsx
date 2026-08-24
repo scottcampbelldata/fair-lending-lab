@@ -3,10 +3,13 @@ import { ThemeToggle } from "./ThemeToggle";
 interface Props {
   hmdaYear?: number;
   hmdaState?: string;
-  ok?: boolean;
+  status: "loading" | "live" | "offline";
 }
 
-export function AppHeader({ hmdaYear, hmdaState, ok }: Props) {
+export function AppHeader({ hmdaYear, hmdaState, status }: Props) {
+  const live = status === "live";
+  const offline = status === "offline";
+  const label = live ? "api live" : offline ? "api offline" : "connecting";
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-bg/80 backdrop-blur">
       <div className="mx-auto flex max-w-shell flex-col gap-3 px-6 py-5 sm:flex-row sm:items-end sm:justify-between">
@@ -27,10 +30,12 @@ export function AppHeader({ hmdaYear, hmdaState, ok }: Props) {
         <div className="flex items-center gap-2.5 font-mono text-xs">
           <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface px-2.5 py-1 text-muted">
             <span
-              className={`inline-block h-1.5 w-1.5 rounded-full ${ok ? "bg-accent" : "bg-bad"}`}
-              style={ok ? { boxShadow: "0 0 0 3px rgba(224,162,74,0.18)" } : undefined}
+              className={`inline-block h-1.5 w-1.5 rounded-full ${
+                live ? "bg-accent" : offline ? "bg-bad" : "bg-faint"
+              }`}
+              style={live ? { boxShadow: "0 0 0 3px rgba(224,162,74,0.18)" } : undefined}
             />
-            {ok ? "api live" : "api offline"}
+            {label}
           </span>
           <span className="text-faint">v0.1.0</span>
           <ThemeToggle />
