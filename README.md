@@ -34,7 +34,7 @@ fair-lending-lab/
 └── README.md
 ```
 
-## Senior BI skills cross-reference
+## Methods and where they live
 
 | Skill | Where it lives |
 |---|---|

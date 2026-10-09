@@ -746,7 +746,7 @@ function MethodsTab() {
             <strong className="text-text">Why not just z-tests?</strong> Rate-spread is heavy
             tailed and not Normal; Welch handles unequal variance; Mann-Whitney is robust to
             non-Normality; the permutation test makes no parametric assumption at all. A
-            senior result is one where parametric, non-parametric, and resampling agree.
+            result holds up when parametric, non-parametric, and resampling agree.
           </p>
           <p className="mt-3">
             <strong className="text-text">Why FDR for this family?</strong> Five tests is a
