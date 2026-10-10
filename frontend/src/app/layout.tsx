@@ -28,9 +28,57 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Fair Lending Lab",
+  metadataBase: new URL("https://fair-lending.scottcampbell.io"),
+  title: "Fair Lending Lab: HMDA mortgage disparity analysis",
   description:
-    "Hypothesis testing and statistical inference on CFPB HMDA mortgage application records. Disparity screening, multiple-method validation, family-wise correction.",
+    "HMDA data analysis tool for fair lending: disparity screening, hypothesis tests and family wise error correction on CFPB HMDA mortgage application records.",
+  applicationName: "Fair Lending Lab",
+  authors: [{ name: "Scott Campbell", url: "https://scottcampbell.io/" }],
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "Fair Lending Lab",
+    title: "Fair Lending Lab: HMDA mortgage disparity analysis",
+    description: "HMDA data analysis tool for fair lending: disparity screening, hypothesis tests and family wise error correction on CFPB HMDA mortgage application records.",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Fair Lending Lab HMDA disparity screening dashboard" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Fair Lending Lab: HMDA mortgage disparity analysis",
+    description: "HMDA data analysis tool for fair lending: disparity screening, hypothesis tests and family wise error correction on CFPB HMDA mortgage application records.",
+    images: ["/og-image.png"],
+  },
+};
+
+// Structured data for search engines.
+const JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Fair Lending Lab",
+  "url": "https://fair-lending.scottcampbell.io/",
+  "description": "HMDA data analysis tool for fair lending: disparity screening, hypothesis tests and family wise error correction on CFPB HMDA mortgage application records.",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Any (web browser)",
+  "isAccessibleForFree": true,
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "Scott Campbell",
+    "url": "https://scottcampbell.io/"
+  },
+  "subjectOf": {
+    "@type": "CreativeWork",
+    "name": "Fair Lending Lab case study",
+    "url": "https://scottcampbell.io/projects/fair-lending-lab/"
+  },
+  "sameAs": [
+    "https://github.com/scottcampbelldata/fair-lending-lab"
+  ]
 };
 
 export default function RootLayout({
@@ -44,6 +92,7 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
       </head>
       <body>
         <ThemeProvider>{children}</ThemeProvider>
