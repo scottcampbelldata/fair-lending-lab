@@ -23,3 +23,7 @@ frontend/.next/
 frontend/out/
 frontend/.turbo/
 CREDENTIALS.txt
+
+# Local files
+.DS_Store
+*.log
