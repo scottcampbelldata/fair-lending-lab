@@ -9,7 +9,7 @@ import {
   type HypothesisSummary,
   type OverviewPayload,
 } from "@/lib/api";
-import { fmtCI, fmtEffect, fmtN, fmtP, fmtPct } from "@/lib/format";
+import { fmtCI, fmtEffect, fmtN, fmtP, fmtPct, fmtPLabel } from "@/lib/format";
 import { AppHeader } from "@/components/AppHeader";
 import { DenialByIncomeChart } from "@/components/DenialByIncomeChart";
 import { DenialByRaceChart } from "@/components/DenialByRaceChart";
@@ -18,13 +18,14 @@ import { HypothesisCard } from "@/components/HypothesisCard";
 import { KpiCard } from "@/components/KpiCard";
 import { Panel } from "@/components/Panel";
 import { Pill } from "@/components/Pill";
+import { Skeleton } from "@/components/Skeleton";
 import { PosteriorChart } from "@/components/PosteriorChart";
 
 type Health = { ok: boolean; version: string; database: string; hmda_year: number; hmda_state: string };
 export type ApiStatus = "loading" | "live" | "offline";
 
-// Encoded so CI's em/en-dash scan of frontend/src stays ASCII-only.
-const EMPTY = "\u2014";
+// A KPI tile with an empty value shows a blank placeholder until data arrives.
+const EMPTY = "";
 
 function apiStatus(health: Health | null, err: string | null): ApiStatus {
   if (err) return "offline";
@@ -206,7 +207,7 @@ function CalloutWhatMattersNow({
   const rd = headline?.effect_size;
   const ci = headline
     ? `[${(headline.ci_low ?? 0).toFixed(3)}, ${(headline.ci_high ?? 0).toFixed(3)}]`
-    : "[ ... ]";
+    : null;
   return (
     <section className="overflow-hidden rounded-md border border-accent-soft bg-accent-dim animate-rise-in">
       <div className="grid grid-cols-1 gap-px sm:grid-cols-[1fr_auto]">
@@ -235,12 +236,14 @@ function CalloutWhatMattersNow({
             risk difference
           </div>
           <div className="mt-1 font-mono text-4xl font-medium tabular-nums tracking-tight text-accent">
-            {rd !== undefined ? fmtPct(rd, 1) : <span className="text-faint">...</span>}
+            {rd !== undefined ? fmtPct(rd, 1) : <Skeleton width="4ch" />}
           </div>
-          <div className="mt-1 font-mono text-xs tabular-nums text-muted">95% CI {ci}</div>
+          <div data-testid="headline-ci" className="mt-1 font-mono text-xs tabular-nums text-muted">
+            95% CI {ci ?? <Skeleton width="14ch" />}
+          </div>
           {/* Kept out of the paragraph so the text block paints once, before data. */}
           <div className="mt-0.5 font-mono text-xs tabular-nums text-muted">
-            z-test p = {headline ? fmtP(headline.p_value) : "..."}
+            {headline ? fmtPLabel(headline.p_value, "z-test p") : <>z-test p <Skeleton width="7ch" /></>}
           </div>
         </div>
       </div>

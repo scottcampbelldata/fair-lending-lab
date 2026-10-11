@@ -1,7 +1,9 @@
 import type { ReactNode } from "react";
+import { Skeleton } from "./Skeleton";
 
 interface Props {
   label: string;
+  /** An empty string shows a blank placeholder while the value loads. */
   value: string;
   unit?: string;
   sub?: ReactNode;
@@ -21,7 +23,7 @@ export function KpiCard({ label, value, unit, sub, flagged }: Props) {
             flagged ? "text-accent" : "text-text"
           }`}
         >
-          {value}
+          {value === "" ? <Skeleton width="2.5ch" /> : value}
         </span>
         {unit && <span className="ml-1.5 text-sm font-normal text-muted">{unit}</span>}
       </div>

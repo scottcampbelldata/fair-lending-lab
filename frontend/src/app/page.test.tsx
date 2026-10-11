@@ -89,11 +89,17 @@ const LIVE_HEALTH = {
 const DOWN_HEALTH = { ...LIVE_HEALTH, ok: false };
 
 // Same glyph as page.tsx; escape so the dash scan does not trip on this file.
-const EMPTY = "\u2014";
+// A loading KPI tile has no text, only a blank placeholder bar.
+const EMPTY = "";
 
 function kpiValue(label: string): string | null | undefined {
   const node = screen.getByText(label);
   return node.parentElement?.querySelector("span.tabular-nums")?.textContent;
+}
+
+function kpiSkeleton(label: string): Element | null | undefined {
+  const node = screen.getByText(label);
+  return node.parentElement?.querySelector("span.tabular-nums [data-skeleton]");
 }
 
 function renderPage() {
@@ -187,6 +193,7 @@ describe("first-paint API status and KPI empty states", () => {
     expect(kpiValue("significant at alpha 0.05")).toBe(EMPTY);
     expect(kpiValue("reject BH-FDR (q=0.05)")).toBe(EMPTY);
     expect(kpiValue("curated applications")).toBe(EMPTY);
+    expect(kpiSkeleton("hypotheses tested")).not.toBeNull();
 
     health.resolve(LIVE_HEALTH);
     overview.resolve(EMPTY_OVERVIEW);
@@ -207,7 +214,15 @@ describe("first-paint API status and KPI empty states", () => {
     expect(screen.getByRole("button", { name: "Overview" })).toBeInTheDocument();
     // The callout holds its place while loading, with its numbers blank.
     expect(screen.getByText("lead finding · H1")).toBeInTheDocument();
-    expect(screen.getByText("z-test p = ...")).toBeInTheDocument();
+    // The big number, the CI and the p-value are blank bars, not text.
+    const big = screen.getByText("risk difference").nextElementSibling;
+    expect(big?.textContent).toBe("");
+    expect(big?.querySelector("[data-skeleton]")).not.toBeNull();
+    const ci = screen.getByTestId("headline-ci");
+    expect(ci.textContent?.trim()).toBe("95% CI");
+    expect(ci.querySelector("[data-skeleton]")).not.toBeNull();
+    expect(screen.getByText(/^z-test p\s*$/)).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/\u2014|\.\.\./);
     expect(() => {
       fireEvent.click(screen.getByRole("button", { name: "Hypotheses" }));
     }).not.toThrow();

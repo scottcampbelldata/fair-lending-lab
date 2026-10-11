@@ -11,6 +11,12 @@ export function fmtP(p: number | null | undefined): string {
   return p.toFixed(3);
 }
 
+// "p = 0.012" before a number, "p < 0.001" when the value is a bound.
+export function fmtPLabel(p: number | null | undefined, name = "p"): string {
+  const v = fmtP(p);
+  return /^[<>]/.test(v) ? `${name} ${v}` : `${name} = ${v}`;
+}
+
 export function fmtEffect(v: number | null | undefined, digits = 3): string {
   if (v === null || v === undefined || Number.isNaN(v)) return "-";
   return v.toFixed(digits);
