@@ -194,7 +194,7 @@ function CalloutWhatMattersNow({ headline }: { headline: HypothesisSummary | und
   const ci = `[${(headline.ci_low ?? 0).toFixed(3)}, ${(headline.ci_high ?? 0).toFixed(3)}]`;
   return (
     <section className="overflow-hidden rounded-md border border-accent-soft bg-accent-dim animate-rise-in">
-      <div className="grid gap-px sm:grid-cols-[1fr_auto]">
+      <div className="grid grid-cols-1 gap-px sm:grid-cols-[1fr_auto]">
         <div className="px-6 py-5">
           <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
             lead finding · H1
@@ -275,7 +275,7 @@ function OverviewTab({
   hypos: HypothesisSummary[];
 }) {
   return (
-    <div className="mt-6 grid gap-4 lg:grid-cols-2">
+    <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
       <Panel
         title="disparity ruler"
         subtitle="every effect estimate against its null"
@@ -367,7 +367,7 @@ function HypothesesTab({
 }) {
   const selected = hypos.find((h) => h.key === selectedKey);
   return (
-    <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_1.4fr]">
+    <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.4fr]">
       <div className="space-y-3">
         {hypos.map((h) => (
           <HypothesisCard
@@ -699,7 +699,7 @@ function FamilyTab({ family, hypos }: { family: FamilyCorrection; hypos: Hypothe
           </table>
         </div>
       </Panel>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <KpiCard
           label="BH-FDR cutoff p"
           value={family.fdr ? family.fdr.cutoff_pvalue.toExponential(2) : "-"}
