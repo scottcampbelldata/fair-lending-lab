@@ -205,7 +205,9 @@ describe("first-paint API status and KPI empty states", () => {
   it("does not throw on Overview or Hypotheses tabs while hypos are pending", () => {
     renderPage();
     expect(screen.getByRole("button", { name: "Overview" })).toBeInTheDocument();
-    expect(screen.queryByText("lead finding · H1")).toBeNull();
+    // The callout holds its place while loading, with its numbers blank.
+    expect(screen.getByText("lead finding · H1")).toBeInTheDocument();
+    expect(screen.getByText("z-test p = ...")).toBeInTheDocument();
     expect(() => {
       fireEvent.click(screen.getByRole("button", { name: "Hypotheses" }));
     }).not.toThrow();

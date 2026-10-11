@@ -16,9 +16,9 @@ export function AppHeader({ hmdaYear, hmdaState, status }: Props) {
         <div className="flex items-center gap-3.5">
           <LabMark />
           <div>
-            <h1 className="font-display text-xl font-semibold tracking-tight text-text">
+            <div className="font-display text-xl font-semibold tracking-tight text-text">
               Fair Lending Lab
-            </h1>
+            </div>
             <p className="mt-0.5 text-sm text-muted">
               Disparity screening on CFPB HMDA mortgage applications.
               {hmdaState && hmdaYear ? (

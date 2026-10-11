@@ -119,7 +119,11 @@ export default function Page() {
           </div>
         )}
 
-        <CalloutWhatMattersNow headline={headline} />
+        <h1 className="mb-4 font-display text-2xl font-semibold tracking-tight text-text">
+          Testing mortgage denial gaps in Massachusetts HMDA data
+        </h1>
+
+        <CalloutWhatMattersNow headline={headline} pending={hypos === null && !err} />
 
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 animate-rise-in [animation-delay:80ms]">
           <KpiCard
@@ -164,6 +168,7 @@ export default function Page() {
             byRace={byRace}
             byBand={byBand}
             hypos={hyposReady}
+            pending={hypos === null && !err}
           />
         )}
         {tab === "hypotheses" && (
@@ -188,10 +193,20 @@ export default function Page() {
   );
 }
 
-function CalloutWhatMattersNow({ headline }: { headline: HypothesisSummary | undefined }) {
-  if (!headline) return null;
-  const rd = headline.effect_size;
-  const ci = `[${(headline.ci_low ?? 0).toFixed(3)}, ${(headline.ci_high ?? 0).toFixed(3)}]`;
+// While the hypotheses load, the callout renders at full size with its
+// numbers blank, so the page below it does not jump when they arrive.
+function CalloutWhatMattersNow({
+  headline,
+  pending,
+}: {
+  headline: HypothesisSummary | undefined;
+  pending: boolean;
+}) {
+  if (!headline && !pending) return null;
+  const rd = headline?.effect_size;
+  const ci = headline
+    ? `[${(headline.ci_low ?? 0).toFixed(3)}, ${(headline.ci_high ?? 0).toFixed(3)}]`
+    : "[ ... ]";
   return (
     <section className="overflow-hidden rounded-md border border-accent-soft bg-accent-dim animate-rise-in">
       <div className="grid grid-cols-1 gap-px sm:grid-cols-[1fr_auto]">
@@ -205,7 +220,7 @@ function CalloutWhatMattersNow({ headline }: { headline: HypothesisSummary | und
             home-purchase loans.
           </p>
           <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
-            Confirmed by a two-proportion z-test (p = {fmtP(headline.p_value)}) and the
+            Confirmed by a two-proportion z-test and the
             Wald-CI odds ratio, and the gap persists inside the lowest income band (H5).
             All five primary tests reject at BH-FDR q = 0.05 and Bonferroni.{" "}
             <span className="text-note">
@@ -220,9 +235,13 @@ function CalloutWhatMattersNow({ headline }: { headline: HypothesisSummary | und
             risk difference
           </div>
           <div className="mt-1 font-mono text-4xl font-medium tabular-nums tracking-tight text-accent">
-            {fmtPct(rd, 1)}
+            {rd !== undefined ? fmtPct(rd, 1) : <span className="text-faint">...</span>}
           </div>
           <div className="mt-1 font-mono text-xs tabular-nums text-muted">95% CI {ci}</div>
+          {/* Kept out of the paragraph so the text block paints once, before data. */}
+          <div className="mt-0.5 font-mono text-xs tabular-nums text-muted">
+            z-test p = {headline ? fmtP(headline.p_value) : "..."}
+          </div>
         </div>
       </div>
     </section>
@@ -268,11 +287,13 @@ function OverviewTab({
   byRace,
   byBand,
   hypos,
+  pending,
 }: {
   overview: OverviewPayload | null;
   byRace: { race_group: string; n: number; n_denied: number; denial_rate: number }[];
   byBand: DenialByIncomeBand[];
   hypos: HypothesisSummary[];
+  pending: boolean;
 }) {
   return (
     <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -281,7 +302,7 @@ function OverviewTab({
         subtitle="every effect estimate against its null"
         className="lg:col-span-2"
       >
-        <DisparityRuler hypos={hypos} />
+        <DisparityRuler hypos={hypos} pending={pending} />
         <p className="mt-3 border-t border-border/60 pt-3 text-xs text-muted">
           Each point is the primary effect estimate; the bar is its 95% confidence
           interval; the tick marks the null (no disparity). A row reads amber when its
@@ -367,8 +388,8 @@ function HypothesesTab({
 }) {
   const selected = hypos.find((h) => h.key === selectedKey);
   return (
-    <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1.4fr]">
-      <div className="space-y-3">
+    <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-4 lg:grid-cols-[1fr_1.4fr]">
+      <div className="min-w-0 space-y-3">
         {hypos.map((h) => (
           <HypothesisCard
             key={h.key}
@@ -378,7 +399,7 @@ function HypothesesTab({
           />
         ))}
       </div>
-      <div className="space-y-4">
+      <div className="min-w-0 space-y-4">
         {selected && (
           <Panel
             title={selected.key}
@@ -444,27 +465,29 @@ function MethodPanel({
 
   return (
     <Panel title="method panel" subtitle="parametric, non-parametric, resampling">
-      <table className="w-full text-sm">
-        <thead className="text-left text-[10px] uppercase tracking-wider text-muted">
-          <tr>
-            <th className="py-1 pr-3">test</th>
-            <th className="py-1 pr-3">p value</th>
-            <th className="py-1 pr-3">statistic</th>
-            <th className="py-1 pr-3">effect</th>
-            <th className="py-1 pr-3">95% CI</th>
-          </tr>
-        </thead>
-        <tbody className="text-text">
-          <MethodRow row={primary} />
-          {Object.entries(secondary).map(([name, body]) => {
-            if (!body || typeof body !== "object") return null;
-            if (name === "stratified_by_income_band" || name === "income_band_fdr") return null;
-            if (name === "pairwise_two_prop" || name === "bh_fdr" || name === "bonferroni") return null;
-            const b = body as Record<string, unknown>;
-            return <MethodRow key={name} row={{ ...b, method: name }} />;
-          })}
-        </tbody>
-      </table>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead className="text-left text-[10px] uppercase tracking-wider text-muted">
+            <tr>
+              <th className="py-1 pr-3">test</th>
+              <th className="py-1 pr-3">p value</th>
+              <th className="py-1 pr-3">statistic</th>
+              <th className="py-1 pr-3">effect</th>
+              <th className="py-1 pr-3">95% CI</th>
+            </tr>
+          </thead>
+          <tbody className="text-text">
+            <MethodRow row={primary} />
+            {Object.entries(secondary).map(([name, body]) => {
+              if (!body || typeof body !== "object") return null;
+              if (name === "stratified_by_income_band" || name === "income_band_fdr") return null;
+              if (name === "pairwise_two_prop" || name === "bh_fdr" || name === "bonferroni") return null;
+              const b = body as Record<string, unknown>;
+              return <MethodRow key={name} row={{ ...b, method: name }} />;
+            })}
+          </tbody>
+        </table>
+      </div>
 
       {bayes && (
         <div className="mt-5 rounded-md border border-border bg-bg/40 p-4">

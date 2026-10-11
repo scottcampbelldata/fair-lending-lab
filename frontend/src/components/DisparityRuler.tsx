@@ -99,7 +99,42 @@ function Row({ h }: { h: HypothesisSummary }) {
   );
 }
 
-export function DisparityRuler({ hypos }: { hypos: HypothesisSummary[] }) {
+// Placeholder row with the same boxes as a real row, used while the
+// hypotheses load so the panel keeps its final height.
+function SkeletonRow() {
+  return (
+    <div aria-hidden className="grid grid-cols-1 items-center gap-x-5 gap-y-2 py-4 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_auto]">
+      <div className="min-w-0">
+        <div className="flex items-baseline gap-2">
+          <span className="font-mono text-xs uppercase tracking-wider invisible">h0</span>
+          <span className="truncate font-sans text-sm invisible">loading hypothesis</span>
+        </div>
+        <div className="mt-0.5 font-mono text-[11px] invisible">effect</div>
+      </div>
+      <div className="relative h-9">
+        <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-border" />
+      </div>
+      <div className="text-left font-mono text-xs sm:text-right invisible">0.000 [0.000, 0.000] p 0.000</div>
+    </div>
+  );
+}
+
+export function DisparityRuler({
+  hypos,
+  pending = false,
+  expected = 5,
+}: {
+  hypos: HypothesisSummary[];
+  pending?: boolean;
+  expected?: number;
+}) {
+  if (!hypos.length && pending) {
+    return (
+      <div className="divide-y divide-border/60">
+        {Array.from({ length: expected }, (_, i) => <SkeletonRow key={i} />)}
+      </div>
+    );
+  }
   if (!hypos.length) return null;
   return (
     <div className="divide-y divide-border/60">
