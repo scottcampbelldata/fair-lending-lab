@@ -14,7 +14,7 @@ export function HypothesisCard({ h, active, onClick }: Props) {
     <button
       type="button"
       onClick={onClick}
-      className={`group w-full rounded-md border bg-surface p-5 text-left transition-colors ${
+      className={`group w-full rounded-sm border bg-surface p-5 text-left transition-colors ${
         active
           ? "border-accent-soft bg-accent-dim"
           : "border-border hover:border-border-strong"
@@ -29,7 +29,7 @@ export function HypothesisCard({ h, active, onClick }: Props) {
         )}
         <Pill>{h.primary_method ?? "no result"}</Pill>
       </div>
-      <h3 className="mt-2 font-display text-base font-medium tracking-tight text-text">
+      <h3 className="mt-2 font-display text-base font-medium text-text">
         {h.title}
       </h3>
       <p className="mt-1 text-sm leading-relaxed text-muted">
@@ -66,7 +66,7 @@ function Stat({
 }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wider text-muted">{label}</div>
+      <div className="text-xs first-letter:uppercase text-muted">{label}</div>
       <div className={`mt-0.5 text-sm text-text ${mono ? "font-mono tabular-nums" : ""}`}>
         {value}
       </div>

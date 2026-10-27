@@ -18,25 +18,25 @@ export interface ChartTokens {
 export function chartTokens(theme: Theme): ChartTokens {
   if (theme === "light") {
     return {
-      grid: "#e7e4dc",
-      tick: "#5d616b",
-      axisLine: "#d8d4ca",
+      grid: "#e6eaeb",
+      tick: "#4d5d63",
+      axisLine: "#d9dfe0",
       tooltipBg: "#ffffff",
-      tooltipBorder: "#e4e1d9",
-      tooltipText: "#1c1d22",
-      tooltipLabel: "#5d616b",
+      tooltipBorder: "#d9dfe0",
+      tooltipText: "#1b2a30",
+      tooltipLabel: "#4d5d63",
       cursor: "rgba(169,110,21,0.08)",
       accent: "#a96e15",
     };
   }
   return {
-    grid: "#22262d",
-    tick: "#8b8f99",
-    axisLine: "#272b33",
-    tooltipBg: "#15171c",
-    tooltipBorder: "#272b33",
-    tooltipText: "#e9e7e2",
-    tooltipLabel: "#8b8f99",
+    grid: "#222c30",
+    tick: "#a6b4b9",
+    axisLine: "#2b3539",
+    tooltipBg: "#182023",
+    tooltipBorder: "#2b3539",
+    tooltipText: "#e6ecee",
+    tooltipLabel: "#a6b4b9",
     cursor: "rgba(224,162,74,0.07)",
     accent: "#e0a24a",
   };

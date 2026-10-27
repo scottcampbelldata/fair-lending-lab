@@ -39,12 +39,12 @@ function Row({ h }: { h: HypothesisSummary }) {
     <div className="grid grid-cols-1 items-center gap-x-5 gap-y-2 py-4 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_auto]">
       <div className="min-w-0">
         <div className="flex items-baseline gap-2">
-          <span className="font-mono text-xs uppercase tracking-wider text-accent">
+          <span className="inline-block font-mono text-xs first-letter:uppercase text-accent">
             {h.key.split("_")[0]}
           </span>
           <span className="truncate font-sans text-sm text-text">{h.title}</span>
         </div>
-        <div className="mt-0.5 font-mono text-[11px] text-faint">
+        <div className="mt-0.5 font-mono text-xs text-faint">
           {h.effect_label ?? "effect"} · {h.primary_method ?? "n/a"}
         </div>
       </div>
@@ -106,10 +106,10 @@ function SkeletonRow() {
     <div aria-hidden className="grid grid-cols-1 items-center gap-x-5 gap-y-2 py-4 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,1.5fr)_auto]">
       <div className="min-w-0">
         <div className="flex items-baseline gap-2">
-          <span className="font-mono text-xs uppercase tracking-wider invisible">h0</span>
+          <span className="inline-block font-mono text-xs first-letter:uppercase invisible">h0</span>
           <span className="truncate font-sans text-sm invisible">loading hypothesis</span>
         </div>
-        <div className="mt-0.5 font-mono text-[11px] invisible">effect</div>
+        <div className="mt-0.5 font-mono text-xs invisible">effect</div>
       </div>
       <div className="relative h-9">
         <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-border" />

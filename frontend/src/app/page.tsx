@@ -11,6 +11,8 @@ import {
 } from "@/lib/api";
 import { fmtCI, fmtEffect, fmtN, fmtP, fmtPct, fmtPLabel } from "@/lib/format";
 import { AppHeader } from "@/components/AppHeader";
+import { ReportBand, CASE_STUDY, REPO } from "@/components/ReportBand";
+import { SiteBar, ConsultFooter } from "@/components/SiteFrame";
 import { DenialByIncomeChart } from "@/components/DenialByIncomeChart";
 import { DenialByRaceChart } from "@/components/DenialByRaceChart";
 import { DisparityRuler } from "@/components/DisparityRuler";
@@ -107,6 +109,8 @@ export default function Page() {
 
   return (
     <div className="min-h-screen">
+      <SiteBar caseStudy={CASE_STUDY} repo={REPO} />
+      <ReportBand />
       <AppHeader
         hmdaYear={health?.hmda_year}
         hmdaState={health?.hmda_state}
@@ -114,19 +118,15 @@ export default function Page() {
       />
       <main className="mx-auto max-w-shell px-6 py-6">
         {err && (
-          <div className="mb-4 rounded-md border border-bad/40 bg-bad/10 p-3 text-sm text-bad">
-            <span className="font-mono text-xs uppercase tracking-wider">api error</span>{" "}
+          <div className="mb-4 rounded-sm border border-bad/40 bg-bad/10 p-3 text-sm text-bad">
+            <span className="inline-block font-mono text-xs first-letter:uppercase">api error</span>{" "}
             {err}
           </div>
         )}
 
-        <h1 className="mb-4 font-display text-2xl font-semibold tracking-tight text-text">
-          Testing mortgage denial gaps in Massachusetts HMDA data
-        </h1>
-
         <CalloutWhatMattersNow headline={headline} pending={hypos === null && !err} />
 
-        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4 animate-rise-in [animation-delay:80ms]">
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <KpiCard
             label="curated applications"
             value={loansValue}
@@ -190,6 +190,7 @@ export default function Page() {
           no PII. Screening signal only. See the causal caveat on each hypothesis.
         </footer>
       </main>
+      <ConsultFooter caseStudy={CASE_STUDY} />
     </div>
   );
 }
@@ -209,13 +210,13 @@ function CalloutWhatMattersNow({
     ? `[${(headline.ci_low ?? 0).toFixed(3)}, ${(headline.ci_high ?? 0).toFixed(3)}]`
     : null;
   return (
-    <section className="overflow-hidden rounded-md border border-accent-soft bg-accent-dim animate-rise-in">
+    <section className="overflow-hidden rounded-sm border border-accent-soft bg-accent-dim">
       <div className="grid grid-cols-1 gap-px sm:grid-cols-[1fr_auto]">
         <div className="px-6 py-5">
-          <div className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+          <div className="font-mono text-xs first-letter:uppercase text-accent">
             lead finding · H1
           </div>
-          <p className="mt-3 max-w-2xl font-display text-lg font-medium leading-snug tracking-tight text-text text-balance">
+          <p className="mt-3 max-w-2xl font-display text-lg font-medium leading-snug text-text text-balance">
             Black non-Hispanic applicants are denied at a higher rate than White
             non-Hispanic applicants for first-lien conventional owner-occupied
             home-purchase loans.
@@ -232,10 +233,10 @@ function CalloutWhatMattersNow({
         </div>
         {/* The headline number, given the weight it deserves. */}
         <div className="flex flex-col justify-center border-t border-accent-soft/40 bg-bg/30 px-6 py-5 sm:border-l sm:border-t-0">
-          <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+          <div className="font-mono text-xs first-letter:uppercase text-muted">
             risk difference
           </div>
-          <div className="mt-1 font-mono text-4xl font-medium tabular-nums tracking-tight text-accent">
+          <div className="mt-1 font-mono text-4xl font-medium tabular-nums text-accent">
             {rd !== undefined ? fmtPct(rd, 1) : <Skeleton width="4ch" />}
           </div>
           <div data-testid="headline-ci" className="mt-1 font-mono text-xs tabular-nums text-muted">
@@ -332,7 +333,7 @@ function OverviewTab({
         <div className="-mx-5 -my-5 overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead className="border-b border-border bg-bg/40">
-              <tr className="text-left text-[10px] uppercase tracking-wider text-muted">
+              <tr className="text-left text-xs text-muted">
                 <th className="px-4 py-2">key</th>
                 <th className="px-4 py-2">title</th>
                 <th className="px-4 py-2">method</th>
@@ -418,11 +419,11 @@ function HypothesesTab({
             <p className="text-sm text-text">{selected.domain_question}</p>
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-muted">
               <div>
-                <div className="text-[10px] uppercase tracking-wider">direction</div>
+                <div className="text-xs first-letter:uppercase">direction</div>
                 <div className="mt-0.5 text-text">{selected.direction}</div>
               </div>
               <div>
-                <div className="text-[10px] uppercase tracking-wider">effect of interest</div>
+                <div className="text-xs first-letter:uppercase">effect of interest</div>
                 <div className="mt-0.5 text-text">{selected.effect_of_interest}</div>
               </div>
             </div>
@@ -437,8 +438,8 @@ function HypothesesTab({
 
 function CausalCaveat({ caveat }: { caveat: string }) {
   return (
-    <div className="mt-4 rounded-md border border-warn/30 bg-[rgba(210,153,34,0.08)] p-3">
-      <div className="text-[10px] uppercase tracking-wider text-warn">causal caveat</div>
+    <div className="mt-4 rounded-sm border border-warn/30 bg-[rgba(210,153,34,0.08)] p-3">
+      <div className="text-xs first-letter:uppercase text-warn">causal caveat</div>
       <p className="mt-1 text-sm leading-relaxed text-text">{caveat}</p>
     </div>
   );
@@ -470,7 +471,7 @@ function MethodPanel({
     <Panel title="method panel" subtitle="parametric, non-parametric, resampling">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="text-left text-[10px] uppercase tracking-wider text-muted">
+          <thead className="text-left text-xs text-muted">
             <tr>
               <th className="py-1 pr-3">test</th>
               <th className="py-1 pr-3">p value</th>
@@ -493,8 +494,8 @@ function MethodPanel({
       </div>
 
       {bayes && (
-        <div className="mt-5 rounded-md border border-border bg-bg/40 p-4">
-          <div className="text-xs uppercase tracking-wider text-muted">Bayesian sensitivity</div>
+        <div className="mt-5 rounded-sm border border-border bg-bg/40 p-4">
+          <div className="text-xs first-letter:uppercase text-muted">Bayesian sensitivity</div>
           <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
             <Stat label="posterior median Δμ" value={bayes.posterior_median_diff.toFixed(3)} />
             <Stat
@@ -524,7 +525,7 @@ function MethodPanel({
 
       {stratified && stratified.length > 0 && (
         <div className="mt-5">
-          <div className="text-xs uppercase tracking-wider text-muted">
+          <div className="text-xs first-letter:uppercase text-muted">
             stratified sensitivity by income band, BH-FDR adjusted
           </div>
           <div className="mt-2 overflow-x-auto">
@@ -570,7 +571,7 @@ function MethodPanel({
 
       {pairwise && pairwise.length > 0 && (
         <div className="mt-5">
-          <div className="text-xs uppercase tracking-wider text-muted">
+          <div className="text-xs first-letter:uppercase text-muted">
             pairwise two-proportion tests, BH-FDR adjusted
           </div>
           <div className="mt-2 overflow-x-auto">
@@ -610,7 +611,7 @@ function MethodPanel({
 
       {lenderTable && (
         <div className="mt-5">
-          <div className="text-xs uppercase tracking-wider text-muted">top 10 lenders</div>
+          <div className="text-xs first-letter:uppercase text-muted">top 10 lenders</div>
           <div className="mt-2 overflow-x-auto">
             <table className="w-full text-xs">
               <thead className="text-left text-muted">
@@ -639,7 +640,7 @@ function MethodPanel({
       )}
 
       <details className="mt-5">
-        <summary className="cursor-pointer text-xs uppercase tracking-wider text-muted">
+        <summary className="cursor-pointer text-xs first-letter:uppercase text-muted">
           group summary
         </summary>
         <pre className="mt-2 overflow-x-auto rounded bg-bg/50 p-3 text-xs text-muted">
@@ -677,7 +678,7 @@ function MethodRow({ row }: { row: Record<string, unknown> }) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="text-[10px] uppercase tracking-wider text-muted">{label}</div>
+      <div className="text-xs first-letter:uppercase text-muted">{label}</div>
       <div className="mt-0.5 font-mono text-sm tabular-nums text-text">{value}</div>
     </div>
   );
@@ -691,7 +692,7 @@ function FamilyTab({ family, hypos }: { family: FamilyCorrection; hypos: Hypothe
         <div className="-mx-5 -my-5 overflow-x-auto">
           <table className="w-full border-collapse text-sm">
             <thead className="border-b border-border">
-              <tr className="text-left text-[10px] uppercase tracking-wider text-muted">
+              <tr className="text-left text-xs text-muted">
                 <th className="px-4 py-2">key</th>
                 <th className="px-4 py-2">title</th>
                 <th className="px-4 py-2">p</th>
@@ -767,7 +768,7 @@ function MethodsTab() {
             <tr className="border-t border-border/40"><td className="py-2 pr-3 font-mono text-xs">power</td><td className="py-2 pr-3">Pre-test sample-size and MDE for each Cohen d target</td></tr>
           </tbody>
         </table>
-        <div className="mt-4 rounded-md border border-border bg-bg/40 p-4 text-sm leading-relaxed text-muted">
+        <div className="mt-4 rounded-sm border border-border bg-bg/40 p-4 text-sm leading-relaxed text-muted">
           <p>
             <strong className="text-text">Why not just z-tests?</strong> Rate-spread is heavy
             tailed and not Normal; Welch handles unequal variance; Mann-Whitney is robust to

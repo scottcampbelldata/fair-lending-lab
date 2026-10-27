@@ -13,13 +13,13 @@ interface Props {
 
 export function KpiCard({ label, value, unit, sub, flagged }: Props) {
   return (
-    <div className="group rounded-md border border-border bg-surface px-5 py-4 transition-colors hover:border-border-strong">
-      <div className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
+    <div className="group rounded-sm border border-border bg-surface px-5 py-4 transition-colors hover:border-border-strong">
+      <div className="text-sm text-muted first-letter:uppercase">
         {label}
       </div>
       <div className="mt-3 flex items-baseline">
         <span
-          className={`font-mono text-[2rem] font-medium leading-none tracking-[-0.02em] tabular-nums ${
+          className={`font-mono text-[2rem] font-normal leading-none tabular-nums ${
             flagged ? "text-accent" : "text-text"
           }`}
         >
@@ -27,7 +27,7 @@ export function KpiCard({ label, value, unit, sub, flagged }: Props) {
         </span>
         {unit && <span className="ml-1.5 text-sm font-normal text-muted">{unit}</span>}
       </div>
-      <div className="mt-2.5 text-xs leading-snug text-muted">{sub}</div>
+      <div className="mt-2.5 text-sm leading-snug text-muted">{sub}</div>
     </div>
   );
 }
