@@ -20,7 +20,7 @@ export function Panel({ title, subtitle, right, children, className = "" }: Prop
               </h2>
             )}
             {subtitle && (
-              <p className="mt-0.5 font-display text-xl font-normal leading-snug text-text">
+              <p className="mt-0.5 font-display text-xl font-normal first-letter:uppercase leading-snug text-text">
                 {subtitle}
               </p>
             )}
